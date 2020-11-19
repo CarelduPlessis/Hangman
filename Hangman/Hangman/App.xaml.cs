@@ -6,6 +6,7 @@ using System.IO;
 
 namespace Hangman
 {
+
     public partial class App : Application
     {
         static HangmanDatabase database;
@@ -25,7 +26,7 @@ namespace Hangman
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new NavigationPage( new MainPage());
         }
 
         protected override void OnStart()
