@@ -65,7 +65,7 @@ namespace Hangman
             char MyChar;
             
             //Rows
-            for()
+            //for()
 
 
             myGrid.Children.Add(Box1);
