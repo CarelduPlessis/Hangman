@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Hangman.Pages
+namespace Hangman
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LevelPage : ContentPage
@@ -15,42 +15,70 @@ namespace Hangman.Pages
         {
             InitializeComponent();
 
-            StackLayout stack = new StackLayout();
 
-            Button btnEasy = new Button();
-            Button btnMed = new Button();
-            Button btnHard = new Button();
+            Label Level = new Label
+            {
+                Text = "Here are levels to choose!",
+                TextColor = Color.Blue,
+                FontSize = 25
+            };
+            Button btnEasy = new Button
+            {
+                Text = "Easy",
+                FontSize = 25,
+                TextColor = Color.Green
+            };
+            btnEasy.Clicked += btnEasy_Clicked;
 
-            //btnEasy.Text = "Easy";
-            //btnEasy.Clicked += BtnEasy_Clicked;
-            //btnMed.Text = "Medium";
-            //btnMed.Clicked += BtnMed_Clicked;
-            //btnHard.Text = "Hard";
-            //btnHard.Clicked += BtnHard_Clicked;
+            Button btnMed = new Button
+            {
+                Text = "Medium",
+                FontSize = 25,
+                TextColor = Color.Yellow
+            };
+            btnMed.Clicked += btnMed_Clicked;
 
-            stack.Children.Add(btnEasy);
-            stack.Children.Add(btnMed);
-            stack.Children.Add(btnHard);
-
-            Content = stack;
+            Button btnHard = new Button
+            {
+                Text = "Hard",
+                FontSize = 25,
+                TextColor = Color.Red
+            };
+            btnHard.Clicked += btnHard_Clicked;
+            
+            Content = new StackLayout
+            {
+                Children =
+                {
+                    Level,
+                    new StackLayout
+                    {
+                        HorizontalOptions = LayoutOptions.Center,
+                        Children =
+                        {
+                            btnEasy,
+                            btnMed,
+                            btnHard,
+                        }
+                    }
+                }
+            };
         }
 
-        //private void BtnHard_Clicked(object sender, EventArgs e)
-        //{
-        //    var gamepage = new GamePage();
-        //    Navigation.PushAsync(new GamePage());
-        //}
+        private void btnHard_Clicked(object sender, EventArgs e)
+        {
+            string level = "Hard";
+            Navigation.PushAsync(new HangManPage());
+        }
 
-        //private void BtnMed_Clicked(object sender, EventArgs e)
-        //{
-        //    var gamepage = new GamePage();
-        //    Navigation.PushAsync(new GamePage());
-        //}
+        private void btnMed_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new HangManPage());
+        }
 
-        //private void BtnEasy_Clicked(object sender, EventArgs e)
-        //{
-        //    var gamepage = new GamePage();
-        //    Navigation.PushAsync(new GamePage());
-        //}
+        private void btnEasy_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new HangManPage());
+        }
     }
 }
