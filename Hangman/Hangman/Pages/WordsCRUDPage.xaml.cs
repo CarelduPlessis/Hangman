@@ -80,7 +80,7 @@ namespace Hangman.Pages
         {
             WordListView = new ListView
             {
-                ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word)
+                 ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word)
             };
 
             //Console.WriteLine("**************************");
@@ -107,7 +107,7 @@ namespace Hangman.Pages
                 // SelectedWordIndex = 0;
                 //UserInput.Text = string.Empty;
                 //WordListView.ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word);
-                Navigation.PushAsync(new WordsCRUDPage());
+                 Navigation.PushAsync(new WordsCRUDPage()).Wait();
             }
         }
         async void DeleteWordDB(object sender, EventArgs e)
@@ -122,7 +122,7 @@ namespace Hangman.Pages
                     await App.Database.DeleteWordAsync(word);
                     //UserInput.Text = string.Empty;
                     //WordListView.ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word);
-                    Navigation.PushAsync(new WordsCRUDPage());
+                    Navigation.PushAsync(new WordsCRUDPage()).Wait();
                 }
             }
         }

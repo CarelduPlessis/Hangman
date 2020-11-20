@@ -122,29 +122,29 @@ namespace Hangman.Data
 
         }
 
-        public Task<WordsModel> GetRandomWordDBAsync()
-        {
-            var random = new Random();
-            List<int> Ids = new List<int>();
-            Ids = GetWordsAsync().Result.Select(itm => itm.Id).ToList();
+        //public Task<WordsModel> GetRandomWordDBAsync()
+        //{
+        //    var random = new Random();
+        //    List<int> Ids = new List<int>();
+        //    Ids = GetWordsAsync().Result.Select(itm => itm.Id).ToList();
 
-            int index = random.Next(Ids.Count + 1);
+        //    int index = random.Next(Ids.Count + 1);
 
-            if (Ids.Count > 0)
-            {
-                Console.WriteLine("***************************************");
-                Console.WriteLine(Ids.Count);
-                Console.WriteLine(index);
-                Console.WriteLine("***************************************");
-                var word = GetWordAsync(Ids[index]);
+        //    if (Ids.Count > 0)
+        //    {
+        //        Console.WriteLine("***************************************");
+        //        Console.WriteLine(Ids.Count);
+        //        Console.WriteLine(index);
+        //        Console.WriteLine("***************************************");
+        //        var word = GetWordAsync(Ids[index]);
 
-                return word;
-            }
-            else
-            {
-                return null;
-            }
-        }
+        //        return word;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
 
         //public Task<List<WordsModel>> GetRandomWordDBAsync()
         //{

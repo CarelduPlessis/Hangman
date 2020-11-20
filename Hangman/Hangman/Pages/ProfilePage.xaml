@@ -2,34 +2,5 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hangman.Pages.ProfilePage">
-    <ContentPage.Content>
-        <Grid x:Name="MainGrid">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
 
-            <Label Grid.Column="0" Grid.Row="0" Text=" " x:Name="UPhoto" HorizontalOptions="Center" VerticalOptions="Center"  ScaleX="1.4" />
-            <Label Grid.Column="0" Grid.Row="1" Text="Name" x:Name="UName" HorizontalOptions="Center" VerticalOptions="Center"  ScaleX="1.4" />
-            <Label Grid.Column="0" Grid.Row="2" Text="Score" x:Name="UScore" HorizontalOptions="Center" VerticalOptions="Center"  ScaleX="1.4" />
-            <Label Grid.Column="0" Grid.Row="3" Text="Gems" x:Name="UGems" HorizontalOptions="Center" VerticalOptions="Center"  ScaleX="1.4" />
-            <Button Grid.Column="0" Grid.Row="4" Text="Edit" x:Name="btnEdit" HorizontalOptions="Center" VerticalOptions="Center" Clicked="Edit_Clicked" FontSize="Medium" />
-            <Button Grid.Column="0" Grid.Row="5" Text="Delete" x:Name="btnDelete" HorizontalOptions="Center" VerticalOptions="Center" Clicked="Delete_Clicked" FontSize="Medium" />
-            <Button Grid.Column="0" Grid.Row="6" Text="Create" x:Name="btnCreate" HorizontalOptions="Center" VerticalOptions="Center" Clicked="Create_Clicked" FontSize="Medium" />
-            <Button Grid.Column="0" Grid.Row="7" Text="Select Player" x:Name="btnSelect" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium" />
-            <Button Grid.Column="0" Grid.Row="8" Text="Add Avatar" x:Name="btnAvatar" HorizontalOptions="Center" VerticalOptions="Center" Clicked="Avatar_Clicked" FontSize="Medium" />
-            
-            
-            </Grid>
-    </ContentPage.Content>
 </ContentPage>
