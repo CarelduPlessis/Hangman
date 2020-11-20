@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Hangman.Pages
+namespace Hangman
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ProfilePage : ContentPage
