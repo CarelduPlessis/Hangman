@@ -8,10 +8,9 @@ using Xamarin.Forms.Xaml;
 
 namespace Hangman
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GameOverPage : ContentPage
+    public partial class MainPage : ContentPage
     {
-        public GameOverPage()
+        public MainPage()
         {
             InitializeComponent();
         }
