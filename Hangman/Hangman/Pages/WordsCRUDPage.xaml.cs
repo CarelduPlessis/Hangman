@@ -151,7 +151,8 @@ namespace Hangman
 
 
                 UserInput.Text = word.Word;
-                Console.WriteLine("Id: " + e.SelectedItemIndex);
+                Console.WriteLine("List Id: " + e.SelectedItemIndex);
+                Console.WriteLine("DB Id: " + SelectedWordIndex);
                 deleteBTN.IsEnabled = true;
                 isSelectedWord = true;
             }
@@ -165,6 +166,7 @@ namespace Hangman
                 RestedALLEntrys();
                 isSelectedWord = false;
                 deleteBTN.IsEnabled = false;
+                SelectedWordIndex = 0;
             }
         }
 

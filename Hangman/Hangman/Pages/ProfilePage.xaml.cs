@@ -20,6 +20,9 @@ namespace Hangman
         Button saveBTN;
         Button deleteBTN;
 
+        // Select Player Profile for your Hangman game
+        Button selectPlayerBTN;
+
         //PlayerListViews Variables (For Logic)
         ListView playerListView;
         int SelectedPlayerIndex = 0;
@@ -109,6 +112,15 @@ namespace Hangman
             deleteBTN.Clicked += DeletePlayerDB;
             deleteBTN.IsEnabled = false;
 
+            selectPlayerBTN = new Button
+            {
+                Text = "Select Player"
+            };
+            selectPlayerBTN.IsEnabled = false;
+            selectPlayerBTN.Clicked += SelectProfile;
+
+            MainstackLayout.Children.Add(selectPlayerBTN);
+
             ListViewHeader.Children.Add(hdNameLabel);
             ListViewHeader.Children.Add(hdLastNameLabel, 1, 0);
             ListViewHeader.Children.Add(hdBestScoreLabel, 2, 0);
@@ -140,7 +152,9 @@ namespace Hangman
 
             MainstackLayout.Children.Add(deleteBTN);
 
-            Content = MainstackLayout;
+            ScrollView scrollView = new ScrollView { Content = MainstackLayout };
+
+            Content = scrollView;
         }
 
         public void CreateListView()
@@ -216,10 +230,11 @@ namespace Hangman
                     entryPlayerGender.Text = "male";
                 }
 
-                Console.WriteLine("Id: " + SelectedPlayerIndex);
+                Console.WriteLine("DB Id: " + SelectedPlayerIndex);
 
                 deleteBTN.IsEnabled = true;
                 isSelectedPlayer = true;
+                selectPlayerBTN.IsEnabled = true;
             }
         }
 
@@ -228,9 +243,11 @@ namespace Hangman
             if (isSelectedPlayer == true)
             {
                 ((ListView)sender).SelectedItem = null;
+                SelectedPlayerIndex = 0;
                 RestedALLEntrys();
                 isSelectedPlayer = false;
                 deleteBTN.IsEnabled = false;
+                selectPlayerBTN.IsEnabled = false;
             }
         }
 
@@ -347,17 +364,17 @@ namespace Hangman
             resetEntry = false;
         }
 
-
-        /*
-        public void SubmitProfile(object sender, EventArgs e)
+        public void SelectProfile(object sender, EventArgs e)
         {
             var hangmanModel = new HangmanModel
             {
-               // NameOfPlayer = enterPlayerName.Text
+                NameOfPlayer = entryPlayerName.Text,
+                PlayerModelID = SelectedPlayerIndex
             };
-            var gameDifficultyPage = new GameDifficultyPage();
-            gameDifficultyPage.BindingContext = hangmanModel;
-            //Navigation.PushAsync(gameDifficultyPage);
-        }*/
+
+            var levelPage = new LevelPage();
+            levelPage.BindingContext = hangmanModel;
+            Navigation.PushAsync(levelPage);
+        }
     }
 }
