@@ -7,42 +7,82 @@ using Xamarin.Forms;
 namespace Hangman
 {
     //MW's Space
-    class Logic
+    public class Logic
     {
-        //The Hidden/Visable Word
-        string HidWord;
-        string VisWord;
+        //The Hidden Word
+        static string HidWord;
 
         //Defing Labels & Btns
-        Label label;
 
-        Label ScoreLbl;
-        int ScoreCount = 0;
-
-        Image HMimage;
-        Button btn;
-        Button[] btns = new Button[26];
-        int btnsIndex = 0;
+        static int ScoreCount = 0;
 
         //Gem
-        int GemCount = 0;
-        Button GemBtn;
-
-        //Game Difficulty Info
-        char GameMode;
-        //Pics Prefix Based on Difficulty
-        string HMpics;
+        static int GemCount = 0;
 
         //Total Wrong Guesses
-        int badGuess = 0;
-        int deadNum;
-        int PointsWorth;
+        static int badGuess = 0;
+        static int deadNum;
+        static int PointsWorth;
 
-        //Indicates if Game is Still Going or Not
-        int GameState = 1;
+        static int GameState;
 
-        //Creates Random Chance
-        Random luck = new Random();
+        /*
+        //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
+        List<string> HMword = new List<string>();
+        //Adding to HM Word List
+
+        public void TempHardCode()
+        {
+            HMword.Add("Siberian Husky");
+            HMword.Add("Pirate");
+            HMword.Add("Mythical Creature");
+            HMword.Add("inevitable");
+            HMword.Add("Movie Night");
+            HMword.Add("Candy Floss");
+            HMword.Add("Wolf");
+            HMword.Add("Challenge");
+            HMword.Add("Hangman");
+            HMword.Add("Ice Cream");
+            HMword.Add("Pizza");
+            HMword.Add("Hamburger");
+            HMword.Add("Soccer");
+            HMword.Add("Archery");
+            HMword.Add("Horse Riding");
+            HMword.Add("To Boldly Go");
+            HMword.Add("Cowboy");
+            HMword.Add("Valley");
+            HMword.Add("Ball");
+            HMword.Add("Toy");
+            HMword.Add("Chocolate");
+            HMword.Add("Nacho");
+            HMword.Add("Possible");
+            HMword.Add("Crazy");
+            HMword.Add("Villan");
+            HMword.Add("Hero");
+            HMword.Add("Social Butterfly");
+            HMword.Add("Nerd");
+            HMword.Add("Programmer");
+            HMword.Add("Dragon");
+            HMword.Add("Pieces of Eight");
+            HMword.Add("Map");
+            HMword.Add("Internet");
+            HMword.Add("Unknown");
+            HMword.Add("Dinosaur");
+            HMword.Add("Weapon");
+            HMword.Add("Pencil");
+            HMword.Add("Game");
+            HMword.Add("Tired");
+            HMword.Add("Bored");
+            HMword.Add("Travel");
+            HMword.Add("Friends");
+            HMword.Add("Star Trek");
+            HMword.Add("Irritating");
+            HMword.Add("Star");
+        }
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
+
+
         /*
         //Getting Game Difficulty
         GameMode = Convert.ToChar(Diff);
@@ -66,10 +106,13 @@ namespace Hangman
                 PointsWorth = 7;
             }
 
+        */
 
         //Makes the Correct Num of '_' for VisWord
-        public void MakeBlankChars()
+        public static string MakeBlankChars(string HidWord)
         {
+            string VisWord = "";
+
             for (int i = 0; i < HidWord.Length; i++)
             {
                 //If it isn't a letter
@@ -82,9 +125,11 @@ namespace Hangman
                     VisWord += "_";
                 }
             }
-        }
 
-        public string SpaceString(string MyString)
+            return VisWord;
+        } //Make Blank Chars ENDS
+
+        public static string SpaceString(string MyString)
         {
             string spacedString = "";
 
@@ -96,30 +141,65 @@ namespace Hangman
             return spacedString;
         } //Space String ENDS
 
+        public static string RemoveSpaces(string CurrVisWord)
+        {
+            string shortWord1 = "";
+            string shortWord2 = "";
 
-        public void NewHMGame(int gameResult) //Sets Up Hangman Game
+            //Finding Spaces
+            for (int i = 0; i < CurrVisWord.Length; i++)
+            {
+                if (CurrVisWord.Substring(i, 1) == " ")
+                {
+                    shortWord1 += "0";
+                }
+                else
+                {
+                    shortWord1 += CurrVisWord.Substring(i, 1);
+                }
+            }
+
+            //Conserving a Word Space
+            shortWord1 = shortWord1.Replace("000", " ");
+
+            //Places Word Space Bck
+            for (int i = 0; i < shortWord1.Length; i++)
+            {
+                if (shortWord1.Substring(i, 1) == "0")
+                {
+                    shortWord2 += "";
+                }
+                else
+                {
+                    shortWord2 += shortWord1.Substring(i, 1);
+                }
+            }
+
+            return shortWord2;
+        } //Remove Spaces ENDS
+
+        public static void NewHMGame(Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
         {
             //Showing the Total Score & Gems
-            ScoreLbl.Text = Convert.ToString(ScoreCount);
+            ScoreTxt.Text = Convert.ToString(ScoreCount);
             GemBtn.Text = "X " + GemCount;
 
             //Getting New Word
             //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
-            HidWord = HMword[luck.Next(HMword.Count)].ToUpper();
+            HidWord = "debugging";
             //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
 
-            VisWord = "";
+            //Ensures Letters are ALL Capitals
+            HidWord = HidWord.ToUpper();
 
             //Showing the Visable Word Letter Count
-            MakeBlankChars();
-
-            label.Text = SpaceString(VisWord);
+            VisWordTxt.Text = SpaceString(MakeBlankChars(HidWord));
 
             //Enabling Gems 1++
             if (GemCount > 0)
             {
                 GemBtn.IsEnabled = true;
-                GemBtn.BackgroundColor = Color.DodgerBlue;
+                GemBtn.BackgroundColor = Color.White;
             }
             else //Disabling Gems 0
             {
@@ -128,23 +208,23 @@ namespace Hangman
             }
 
             //Re-Enabling ALL Alphabet Btns
-            for (int i = 0; i < btns.Length; i++)
+            for (int i = 0; i < AlphaBtns.Length; i++)
             {
-                btns[i].IsEnabled = true;
-                btns[i].BackgroundColor = Color.DodgerBlue;
+                AlphaBtns[i].IsEnabled = true;
+                AlphaBtns[i].BackgroundColor = Color.White;
             }
 
             //Showing Img, Score & set bad Guesses to Zero
-            HMimage.Source = HMpics + 1 + ".png";
-            ScoreLbl.Text = "Score: " + ScoreCount;
+            // + HMpics
+            HMimg.Source = "HME" + 1 + ".png";
+            ScoreTxt.Text = "Score: " + ScoreCount;
             badGuess = 0;
 
-            //Start New Game
+            //New Game Starts
             GameState = 1;
         } //NewHMGame ENDS
 
-
-        public async void GuessChar(object sender, EventArgs e)
+        public static async void GuessChar(object sender, EventArgs e, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             //Only While Game is Active
             if (sender is Button btn && GameState == 1)
@@ -158,6 +238,7 @@ namespace Hangman
                     btn.BackgroundColor = Color.FromRgb(223, 236, 223);
 
                     string NewVisWord = "";
+                    string VisWord = RemoveSpaces(VisWordTxt.Text);
 
                     for (int i = 0; i < HidWord.Length; i++)
                     {
@@ -171,15 +252,14 @@ namespace Hangman
                         }
                     }
 
-                    VisWord = NewVisWord;
-                    label.Text = SpaceString(VisWord);
+                    VisWordTxt.Text = SpaceString(NewVisWord);
 
                     //If all Letters are Found
-                    if (VisWord.Contains("_") == false)
+                    if (NewVisWord.Contains("_") == false)
                     {
                         //Game Over
                         GameState = 0;
-                        GameEnd(1);
+                        GameEnd(1, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
                     }
 
                 } //The Char Exists in HidWordENDS
@@ -190,12 +270,12 @@ namespace Hangman
                     //No Lives are left
                     if ((badGuess + 1) == deadNum)
                     {
-                        HMimage.Source = "HMDead.png";
-                        label.Text = SpaceString(HidWord);
+                        HMimg.Source = "HMDead.png";
+                        VisWordTxt.Text = SpaceString(HidWord);
 
                         //Game Over
                         GameState = 0;
-                        GameEnd(0);
+                        GameEnd(0, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
 
                         //Background is redish for incorrect input
                         btn.BackgroundColor = Color.FromRgb(255, 102, 102);
@@ -206,7 +286,7 @@ namespace Hangman
                     }
                     else
                     {
-                        HMimage.Source = HMpics + (badGuess + 1) + ".png";
+                        HMimg.Source = "HME" + (badGuess + 1) + ".png";
 
                         //Background is redish for incorrect input
                         btn.BackgroundColor = Color.FromRgb(236, 223, 223);
@@ -215,8 +295,8 @@ namespace Hangman
             }
         } //GuessChar ENDS
 
-
-        public void UseGem(object sender, EventArgs e)
+        /*
+        public static void UseGem(object sender, EventArgs e)
         {
             //Only While Game is Active
             if (sender is Button GemBtn && GameState == 1 && GemCount > 0)
@@ -301,16 +381,16 @@ namespace Hangman
             }
         } //UseGem ENDS
 
-
-        public async void GameEnd(int gameResult)
+        */
+        public static async void GameEnd(int gameResult, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             //Shows Game Result
-            await GameResult(gameResult);
+            await GameResult(gameResult, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
 
             //New Hangman Game
             if (gameResult == 1)
             {
-                NewHMGame(1);
+                NewHMGame(ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
             }
             else //GAME OVER
             {
@@ -320,7 +400,7 @@ namespace Hangman
 
 
         //Little Fun Result 'Animation'
-        public async Task GameResult(int gameResult)
+        public static async Task GameResult(int gameResult, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             int GemsEarned = 0;
 
@@ -342,12 +422,9 @@ namespace Hangman
             {
                 HidWord = "Game Over";
             }
-
+            //Ensures Capitals are Used
             HidWord = HidWord.ToUpper();
-            VisWord = "";
 
-            //Showing the Visable Word Letter Count
-            MakeBlankChars();
 
             //Gives User Time to See the HM Word
             await Task.Delay(1000);
@@ -357,16 +434,17 @@ namespace Hangman
             {
                 switch (GemsEarned)
                 {
-                    case 1: HMimage.Source = "HMGem.png"; break;
-                    case 2: HMimage.Source = "HMGem2.png"; break;
-                    case 3: HMimage.Source = "HMGem3.png"; break;
+                    case 1: HMimg.Source = "HMGem.png"; break;
+                    case 2: HMimg.Source = "HMGem2.png"; break;
+                    case 3: HMimg.Source = "HMGem3.png"; break;
                 }
 
-                ScoreLbl.Text = "+ " + GemsEarned;
+                ScoreTxt.Text = "+ " + GemsEarned;
             }
 
             //Reveals New Word
-            label.Text = SpaceString(VisWord);
+            string VisWord = SpaceString(MakeBlankChars(HidWord));
+            VisWordTxt.Text = VisWord;
 
             //Reveal Results Character by Character
             for (int i = 1; i < HidWord.Length; i++)
@@ -377,16 +455,15 @@ namespace Hangman
                     await Task.Delay(200);
                 }
 
-                label.Text = SpaceString(HidWord.Substring(0, i) + VisWord.Substring(i, (HidWord.Length - i)));
+                VisWordTxt.Text = SpaceString(HidWord.Substring(0, i) + VisWord.Substring(i, (HidWord.Length - i)));
             }
 
             await Task.Delay(200);
-            label.Text = SpaceString(HidWord);
+            VisWordTxt.Text = SpaceString(HidWord);
 
             //Gives User Time to See Result
             await Task.Delay(1000);
         }
-        */
     }
 }
 
