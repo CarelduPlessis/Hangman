@@ -25,9 +25,9 @@ namespace Hangman
 
         //PlayerListViews Variables (For Logic)
         ListView playerListView;
-        int SelectedPlayerIndex = 0;
-        Boolean isSelectedPlayer = false;
-        List<int> players = new List<int>();
+        int SelectedPlayerIndex = 0; // Get DB ID of the Selected Player form ListView
+        Boolean isSelectedPlayer = false; // Keep Track When the Player is selected (in order to Deselect/ select)
+        List<int> players = new List<int>(); // store ids from DB
 
         // Headers For the PlayerListView 
         Label hdNameLabel = new Label { Text = "UserName", FontAttributes = FontAttributes.Bold, FontSize = Device.GetNamedSize(NamedSize.Subtitle, typeof(Label)), VerticalTextAlignment = TextAlignment.Center, HeightRequest = 20 };
@@ -46,8 +46,8 @@ namespace Hangman
         string DefaultUserName = "Enter in User Name"; // Defualt Value for Entry: User Name
         string DefaultPlayerGender = "Player Gender: Female or Male"; // Defualt Value for Entry: Player Gender
 
-        bool resetEntry = false;
-        string ImageName;
+        bool resetEntry = false; // Track When Reseting Entry to void clashing with validation
+        string ImageName; // keep track of the Images (Avatar Images)
 
         int countValidInput = 0;
 
@@ -157,6 +157,7 @@ namespace Hangman
             Content = scrollView;
         }
 
+        #region Create the ListView
         public void CreateListView()
         {
             players = App.Database.GetPlayersAsync().Result.Select(itm => itm.Id).ToList();
@@ -171,7 +172,9 @@ namespace Hangman
             
             playerListView.ItemTemplate = new DataTemplate(typeof(PlayerCell));
         }
+        #endregion
 
+        #region Save Player To DataBase
         async void SavePlayerDB(object sender, EventArgs e)
         {
             if (validation())
@@ -183,13 +186,16 @@ namespace Hangman
                    NameOfPlayer = entryPlayerName.Text,
                    AvatarOfPlayer = ImageName
                 });
-                ReferenceThePage();
+                RefreshThePage();
             }
             else
             {
                 await DisplayAlert("Invalid Entry", "Enter in a Username, Player Name and Choose a Gender: Male or Female", "Ok");
             }
         }
+        #endregion
+
+        #region Delete Player From DataBase 
         async void DeletePlayerDB(object sender, EventArgs e)
         {
             PlayerModel player = new PlayerModel();
@@ -199,15 +205,19 @@ namespace Hangman
             {
                deleteBTN.IsEnabled = false;
                await App.Database.DeletePlayerAsync(player);
-               ReferenceThePage();
+                RefreshThePage();
             }
         }
+        #endregion
 
-        public void ReferenceThePage()
+        #region Refresh The Page
+        public void RefreshThePage()
         {
             Navigation.PushAsync(new ProfilePage());
         }
+        #endregion
 
+        #region Get the selected player from the ListView
         async void GetPlayerFromListView(object sender, SelectedItemChangedEventArgs e)
         {
             if (isSelectedPlayer == false)
@@ -237,7 +247,9 @@ namespace Hangman
                 selectPlayerBTN.IsEnabled = true;
             }
         }
+        #endregion
 
+        #region Deselect the Player from ListView
         public void DeselectPlayer(object sender, ItemTappedEventArgs e)
         {
             if (isSelectedPlayer == true)
@@ -250,7 +262,9 @@ namespace Hangman
                 selectPlayerBTN.IsEnabled = false;
             }
         }
+        #endregion
 
+        #region When the Text Change, Start Validating
         int _limit = 10;     //Enter text limit
         public void TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -286,14 +300,18 @@ namespace Hangman
                 }
             }
         }
+        #endregion
 
+        #region Remove Character (Invalid Characters)
         public void RemoveCharacter(string letter, object sender)
         {
             var _entry = (Entry)sender;
             letter = letter.Remove(letter.Length - 1); // Remove Last character
             _entry.Text = letter;        //Set the Old value
         }
+        #endregion
 
+        #region When the Entry is OnFocus (Remove Default Text)
         public void OnFocus(object sender, FocusEventArgs e)
         {
             var _entry = (Entry)sender;
@@ -302,7 +320,9 @@ namespace Hangman
                 _entry.Text = "";
             }
         }
+        #endregion
 
+        #region When the Entry is UnFocus (Give Entry its Default Text if Entry is Empty)
         public void UnFocusEntry(object sender, EventArgs e)
         {
             var _entry = (Entry)sender;
@@ -326,7 +346,9 @@ namespace Hangman
                 }
             }
         }
+        #endregion
 
+        #region Check Validation Before Saving Player To Database
         public bool validation()
         {
             if (entryPlayerGender.Text.ToLower() == "female" || entryPlayerGender.Text.ToLower() == "male")
@@ -354,7 +376,9 @@ namespace Hangman
                 return false;
             }
         }
+        #endregion
 
+        #region Rest ALL Entrys
         public void RestedALLEntrys()
         {
             resetEntry = true;
@@ -363,7 +387,9 @@ namespace Hangman
             entryPlayerGender.Text = DefaultPlayerGender;
             resetEntry = false;
         }
+        #endregion
 
+        #region Select Profile to use in New Game of Hangman
         public void SelectProfile(object sender, EventArgs e)
         {
             var hangmanModel = new HangmanModel
@@ -376,5 +402,6 @@ namespace Hangman
             levelPage.BindingContext = hangmanModel;
             Navigation.PushAsync(levelPage);
         }
+        #endregion
     }
 }

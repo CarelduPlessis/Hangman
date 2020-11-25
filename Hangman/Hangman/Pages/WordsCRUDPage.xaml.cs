@@ -13,27 +13,29 @@ namespace Hangman
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WordsCRUDPage : ContentPage
     {
-        ListView WordListView;
-        Entry UserInput;
-        StackLayout MainstackLayout;
-        int SelectedWordIndex = 0;
-        Boolean isSelectedWord = false;
-        List<int> words = new List<int>();
+        Entry UserInput; // Enter in Words
+        Button saveBTN; // button to Save word to DB
+        Button deleteBTN; // button to delete word from DB
 
-        Button saveBTN;
-        Button deleteBTN;
+        //ListView Variables 
+        ListView WordListView;  // Display all words in DB
+        int SelectedWordIndex = 0; // Get DB ID of the Selected word form ListView
+        Boolean isSelectedWord = false; // Keep Track When the word is selected (in order to Deselect/ select)
+        List<int> words = new List<int>(); // store ids from DB
+
 
         string DefaultUserInput = "Enter in Word"; // Defualt Value for Entry: UserInput
-        bool resetEntry = false;
-        int countValidInput = 0;
+        bool resetEntry = false; // Track When Reseting Entry to void clashing with validation
+        int countValidInput = 0; // Check Valid Input
+
+        // Layouts 
+        StackLayout MainstackLayout;
 
         public WordsCRUDPage()
         {
             InitializeComponent();
 
             MainstackLayout = new StackLayout();
-
-            Label label = new Label();
 
             UserInput = new Entry
             {
@@ -47,24 +49,20 @@ namespace Hangman
             {
                 Text = "Save Word in DB"
             };
+            saveBTN.Clicked += SaveWordDB;
 
             deleteBTN = new Button
             {
                 Text = "Delete Word from DB"
             };
             deleteBTN.IsEnabled = false;
+            deleteBTN.Clicked += DeleteWordDB;
 
             CreateListView();
 
             WordListView.ItemSelected += GetWordFromListView;
 
             WordListView.ItemTapped += DeselectWord;
-
-            saveBTN.Clicked += SaveWordDB;
-
-            deleteBTN.Clicked += DeleteWordDB;
-
-            MainstackLayout.Children.Add(label);
 
             MainstackLayout.Children.Add(UserInput);
 
@@ -74,6 +72,8 @@ namespace Hangman
 
             Content = MainstackLayout;
         }
+
+        #region Create the ListView
         public void CreateListView()
         {
             WordListView = new ListView
@@ -93,7 +93,9 @@ namespace Hangman
 
             MainstackLayout.Children.Add(WordListView);
         }
+        #endregion 
 
+        #region Save Word To DataBase  
         async void SaveWordDB(object sender, EventArgs e)
         {
             if (validation()) 
@@ -108,15 +110,17 @@ namespace Hangman
                     // SelectedWordIndex = 0;
                     //UserInput.Text = string.Empty;
                     //WordListView.ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word);
-                    ReferenceThePage();
+                    RefreshThePage();
                 }
             }
             else
             {
                 await DisplayAlert("Invalid Entry", "You need to enter in a word that doesn't have more then " + _limit + " letters", "Ok");
             }
-
         }
+        #endregion
+
+        #region Delete Word From DataBase   
         async void DeleteWordDB(object sender, EventArgs e)
         {
             if (isSelectedWord != false)
@@ -130,16 +134,20 @@ namespace Hangman
                     await App.Database.DeleteWordAsync(word);
                     //UserInput.Text = string.Empty;
                     //WordListView.ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word);
-                    ReferenceThePage();
+                    RefreshThePage();
                 }
             }
         }
+        #endregion
 
-        public void ReferenceThePage()
+        #region Refresh The Page
+        public void RefreshThePage()
         {
             Navigation.PushAsync(new WordsCRUDPage());
         }
+        #endregion
 
+        #region Get the selected word from the ListView
         async void GetWordFromListView(object sender, SelectedItemChangedEventArgs e)
         {
             if (isSelectedWord == false)
@@ -149,7 +157,6 @@ namespace Hangman
                 WordsModel word = new WordsModel();
                 word = await App.Database.GetWordAsync(SelectedWordIndex);
 
-
                 UserInput.Text = word.Word;
                 Console.WriteLine("List Id: " + e.SelectedItemIndex);
                 Console.WriteLine("DB Id: " + SelectedWordIndex);
@@ -157,7 +164,9 @@ namespace Hangman
                 isSelectedWord = true;
             }
         }
+        #endregion
 
+        #region Deselect the Word from ListView
         public void DeselectWord(object sender, ItemTappedEventArgs e)
         {
             if (isSelectedWord == true)
@@ -169,8 +178,9 @@ namespace Hangman
                 SelectedWordIndex = 0;
             }
         }
+        #endregion
 
-
+        #region When the Text Change, Start Validating
         int _limit = 11;     //Enter text limit
         public void TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -195,14 +205,18 @@ namespace Hangman
                 }
             }
         }
+        #endregion
 
+        #region Remove Character (Invalid Characters)
         public void RemoveCharacter(string letter, object sender)
         {
             var _entry = (Entry)sender;
             letter = letter.Remove(letter.Length - 1); // Remove Last character
             _entry.Text = letter;        //Set the Old value
         }
+        #endregion
 
+        #region When the Entry is OnFocus (Remove Default Text)
         public void OnFocus(object sender, FocusEventArgs e)
         {
             var _entry = (Entry)sender;
@@ -211,7 +225,9 @@ namespace Hangman
                 _entry.Text = "";
             }
         }
+        #endregion
 
+        #region When the Entry is UnFocus (Give Entry its Default Text if Entry is Empty)
         public void UnFocusEntry(object sender, EventArgs e)
         {
             var _entry = (Entry)sender;
@@ -225,7 +241,9 @@ namespace Hangman
                 }
             }
         }
+        #endregion
 
+        #region Check Validation before Saving Word To Database
         public bool validation()
         {
             if (UserInput.Text != DefaultUserInput && UserInput.Text != "")
@@ -242,12 +260,15 @@ namespace Hangman
                 return false;
             }
         }
+        #endregion
 
+        #region Rest ALL Entrys
         public void RestedALLEntrys()
         {
             resetEntry = true;
             UserInput.Text = DefaultUserInput;
             resetEntry = false;
         }
+        #endregion
     }
 }
