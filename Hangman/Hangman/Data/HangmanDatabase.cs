@@ -177,6 +177,17 @@ namespace Hangman.Data
         }
         */
 
+
+        //Website: Microsoft Documentation
+        //Title: CA1828: Do not use CountAsync/LongCountAsync when AnyAsync can be used
+        // URL: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1828
+
+        //Website: Microsoft Documentation
+        //Title: Async return types (C#)
+        // URL: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types
+        public async Task<string> CheckRandomID(int id)
+        => await _database.Table<WordsModel>().Where(i => i.Id == id).CountAsync() != 0 ? "Not empty" : "Empty";
+
         public Task<int> DeleteWordAsync(WordsModel word)
         {
             return _database.DeleteAsync(word);

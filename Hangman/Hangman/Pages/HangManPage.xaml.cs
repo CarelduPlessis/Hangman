@@ -138,7 +138,6 @@ namespace Hangman
                     //MN - Added ENDS
 
                     letter++;
-
                 }
             }
             //MyChar.Clicked += OnButtonClicked;

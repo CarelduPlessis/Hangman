@@ -5,7 +5,6 @@ using System.ComponentModel;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 
-
 namespace Hangman
 {
     public class HangmanModel : INotifyPropertyChanged
@@ -25,6 +24,9 @@ namespace Hangman
 
         [OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
         public PlayerModel childPlayerModel { get; set; }
+
+        [ForeignKey(typeof(PlayerModel))]
+        public int PlayerModelID { get; set; }
     }
 }
 
