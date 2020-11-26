@@ -76,6 +76,7 @@ namespace Hangman
         #region Create the ListView
         public void CreateListView()
         {
+            //creat the ListView
             WordListView = new ListView
             {
                 ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word),
@@ -89,6 +90,7 @@ namespace Hangman
             //Random rand = new Random();
             //await App.Database.GetWordAsync(rand.Next(1, App.Database.GetWordsAsync().Result.Max(x => x.Id)));
 
+            // Store all the ids to a List
             words = App.Database.GetWordsAsync().Result.Select(itm => itm.Id).ToList();
 
             MainstackLayout.Children.Add(WordListView);
@@ -107,9 +109,6 @@ namespace Hangman
                         Id = SelectedWordIndex,
                         Word = UserInput.Text
                     });
-                    // SelectedWordIndex = 0;
-                    //UserInput.Text = string.Empty;
-                    //WordListView.ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word);
                     RefreshThePage();
                 }
             }

@@ -122,37 +122,33 @@ namespace Hangman.Data
 
         }
 
-        //public Task<WordsModel> GetRandomWordDBAsync()
-        //{
-        //    var random = new Random();
-        //    List<int> Ids = new List<int>();
-        //    Ids = GetWordsAsync().Result.Select(itm => itm.Id).ToList();
+        public Task<int> DeleteWordAsync(WordsModel word)
+        {
+            return _database.DeleteAsync(word);
+            //return _database.DeleteAllAsync<WordsModel>();
+        }
 
-        //    int index = random.Next(Ids.Count + 1);
+        //Website: Microsoft Documentation
+        //Title: CA1828: Do not use CountAsync/LongCountAsync when AnyAsync can be used
+        // URL: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1828
 
-        //    if (Ids.Count > 0)
-        //    {
-        //        Console.WriteLine("***************************************");
-        //        Console.WriteLine(Ids.Count);
-        //        Console.WriteLine(index);
-        //        Console.WriteLine("***************************************");
-        //        var word = GetWordAsync(Ids[index]);
+        //Website: Microsoft Documentation
+        //Title: Async return types (C#)
+        // URL: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types
+        public async Task<string> CheckRandomID(int id)
+        => await _database.Table<WordsModel>().Where(i => i.Id == id).CountAsync() != 0 ? "Not empty" : "Empty";
 
-        //        return word;
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //}
 
-        //public Task<List<WordsModel>> GetRandomWordDBAsync()
-        //{
-        //    // Website name: MySQLTUTORIAL
-        //    // Title: MySQL Select Random Records
-        //    // URL: https://www.mysqltutorial.org/select-random-records-database-table.aspx
-        //    return _database.QueryAsync<WordsModel>("SELECT Word FROM WordsModel ORDER BY random() LIMIT 1");
-        //}
+
+
+
+        /*public Task<List<WordsModel>> GetRandomWordDBAsync()
+          {
+              // Website name: MySQLTUTORIAL
+              // Title: MySQL Select Random Records
+              // URL: https://www.mysqltutorial.org/select-random-records-database-table.aspx
+              return _database.QueryAsync<WordsModel>("SELECT Word FROM WordsModel ORDER BY random() LIMIT 1");
+          }*/
 
         /*
         public Task<List<WordsModel>> GetRandomWordDBAsync()
@@ -176,22 +172,5 @@ namespace Hangman.Data
             return _database.QueryAsync<WordsModel>("SELECT Word FROM WordsModel ORDER BY random() LIMIT 1");
         }
         */
-
-
-        //Website: Microsoft Documentation
-        //Title: CA1828: Do not use CountAsync/LongCountAsync when AnyAsync can be used
-        // URL: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1828
-
-        //Website: Microsoft Documentation
-        //Title: Async return types (C#)
-        // URL: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types
-        public async Task<string> CheckRandomID(int id)
-        => await _database.Table<WordsModel>().Where(i => i.Id == id).CountAsync() != 0 ? "Not empty" : "Empty";
-
-        public Task<int> DeleteWordAsync(WordsModel word)
-        {
-            return _database.DeleteAsync(word);
-            //return _database.DeleteAllAsync<WordsModel>();
-        }
     }
 }
