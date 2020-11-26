@@ -110,7 +110,7 @@ namespace Hangman
 
         public void Again_Clicked(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new HangManPage());
+            Navigation.PushAsync(new LevelPage());
         }
         /*public void Again_Clicked(object sender, EventArgs e)
         {

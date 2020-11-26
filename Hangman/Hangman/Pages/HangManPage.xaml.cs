@@ -24,7 +24,7 @@ namespace Hangman
         Button btn;
         Button[] btns = new Button[26];
 
-        public HangManPage()
+        public HangManPage(string Diff)
         {
             InitializeComponent();
 
@@ -50,7 +50,7 @@ namespace Hangman
             Grid.SetRow(GScore, 0);
             Grid.SetColumnSpan(GScore, 7);
 
-            Entry GAttempt = new Entry
+            Label GameLbl = new Label
             {
                 Text = "Attempt: " + Convert.ToString(attempt),
                 HorizontalOptions = LayoutOptions.End,
@@ -58,8 +58,8 @@ namespace Hangman
                 TextColor = Color.Cyan,
                 FontSize = 20
             };
-            Grid.SetRow(GAttempt, 0);
-            Grid.SetColumnSpan(GAttempt, 7);
+            Grid.SetRow(GameLbl, 0);
+            Grid.SetColumnSpan(GameLbl, 7);
 
             BoxView imageBox = new BoxView
             {
@@ -133,7 +133,7 @@ namespace Hangman
                     btnsIndex++;
                     btn.Clicked += (object sender, EventArgs e) =>
                     {
-                        Logic.GuessChar(sender, e, GScore, HMimage, letterLabel, btns, HMGem);
+                        Logic.GuessChar(sender, e, GScore, GameLbl, HMimage, letterLabel, btns, HMGem);
                     };
                     //MN - Added ENDS
 
@@ -143,7 +143,7 @@ namespace Hangman
             //MyChar.Clicked += OnButtonClicked;
 
             myGrid.Children.Add(scoreBox);
-            myGrid.Children.Add(GAttempt);
+            myGrid.Children.Add(GameLbl);
             myGrid.Children.Add(GScore);
             myGrid.Children.Add(imageBox);
             myGrid.Children.Add(HMimage);
@@ -153,9 +153,15 @@ namespace Hangman
 
             Content = myGrid;
 
+            //MN - Setup Game Difficulty
 
-            //MN - Loads HM Game once on load
-            Logic.NewHMGame(GScore, HMimage, letterLabel, btns, HMGem);
+            //DB db = new DB();
+            //db.readdata
+
+            Logic.SetDiff(Diff);
+
+            //Loads HM Game once on load
+            Logic.NewHMGame(GScore, GameLbl, HMimage, letterLabel, btns, HMGem);
             //MN - ENDS
         }
     }

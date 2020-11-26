@@ -58,14 +58,6 @@ namespace Hangman
             };
             btnExit.Clicked += Exit_Clicked;
 
-            // This will need to be Removed after Testing 
-            Button btnTest = new Button
-            {
-                Text = "Test",
-                FontSize = 25,
-                TextColor = Color.Black
-            };
-            btnTest.Clicked += Test_Clicked;
             Content = new StackLayout
             {
                 Children =
@@ -80,7 +72,7 @@ namespace Hangman
                             btnInst,
                             btnProf,
                             btnDB,
-                            btnExit,
+                            btnExit
                         }
                     }
                 }
@@ -101,12 +93,6 @@ namespace Hangman
             Navigation.PushAsync(new WordsCRUDPage());
         }
 
-        // This will need to be Removed after Testing 
-        private void Test_Clicked(object sender, EventArgs e)
-        {
-            // will Navigate To TestRandomWordPage.
-            Navigation.PushAsync(new TestRandomWordPage());
-        }
         private void Exit_Clicked(object sender, EventArgs e)
         {
             System.Diagnostics.Process.GetCurrentProcess().Kill();
@@ -114,7 +100,7 @@ namespace Hangman
 
         public void StartGame_Clicked(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new LevelPage());
+            Navigation.PushAsync(new ProfilePage());
         }
 
 

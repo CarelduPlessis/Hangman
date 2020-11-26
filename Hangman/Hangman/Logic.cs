@@ -13,31 +13,36 @@ namespace Hangman
         //The Hidden Word
         static string HidWord;
 
-        //Defing Labels & Btns
-
-        static int ScoreCount = 0;
+        //Score & GameCount
+        static int ScoreCount;
+        static int GameCount;
 
         //Gem
-        static int GemCount = 0;
+        static int GemCount;
 
         //Total Wrong Guesses
         static int badGuess = 0;
-        static int deadNum;
-        static int PointsWorth;
+        static int deadNum = 12;
+        static int PointsWorth = 1;
+
+        //HM Image Prefix
+        static string HMpics;
 
         static int GameState;
 
-        /*
         //Getting Game Difficulty
-        GameMode = Convert.ToChar(Diff);
+        public static void SetDiff(string GameMode)
+        {
+            ScoreCount = 0;
+            GameCount = -1;
 
-            if (GameMode == 'E')
+            if (GameMode == "Easy")
             {
                 HMpics = "HME";
                 deadNum = 12;
                 PointsWorth = 1;
             }
-            else if (GameMode == 'M')
+            else if (GameMode == "Medium")
             {
                 HMpics = "HMN";
                 deadNum = 9;
@@ -49,7 +54,7 @@ namespace Hangman
                 deadNum = 6;
                 PointsWorth = 7;
             }
-        */
+        }
 
         //Makes the Correct Num of '_' for VisWord
         public static string MakeBlankChars(string HidWord)
@@ -121,8 +126,12 @@ namespace Hangman
             return shortWord2;
         } //Remove Spaces ENDS
 
-        public static async Task NewHMGame(Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
+        public static async Task NewHMGame(Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
         {
+            //Adds to Game Count
+            GameCount++;
+            GameTxt.Text = "Games Won: " + GameCount;
+
             //Showing the Total Score & Gems
             ScoreTxt.Text = Convert.ToString(ScoreCount);
             GemBtn.Text = "X " + GemCount;
@@ -157,7 +166,7 @@ namespace Hangman
 
             //Showing Img, Score & set bad Guesses to Zero
             // + HMpics
-            HMimg.Source = "HME" + 1 + ".png";
+            HMimg.Source = HMpics + 1 + ".png";
             ScoreTxt.Text = "Score: " + ScoreCount;
             badGuess = 0;
 
@@ -165,7 +174,7 @@ namespace Hangman
             GameState = 1;
         } //NewHMGame ENDS
 
-        public static async void GuessChar(object sender, EventArgs e, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
+        public static async void GuessChar(object sender, EventArgs e, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             //Only While Game is Active
             if (sender is Button btn && GameState == 1)
@@ -200,7 +209,7 @@ namespace Hangman
                     {
                         //Game Over
                         GameState = 0;
-                        GameEnd(1, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                        GameEnd(1, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
                     }
 
                 } //The Char Exists in HidWordENDS
@@ -216,7 +225,7 @@ namespace Hangman
 
                         //Game Over
                         GameState = 0;
-                        GameEnd(0, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                        GameEnd(0, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
 
                         //Background is redish for incorrect input
                         btn.BackgroundColor = Color.FromRgb(255, 102, 102);
@@ -227,7 +236,7 @@ namespace Hangman
                     }
                     else
                     {
-                        HMimg.Source = "HME" + (badGuess + 1) + ".png";
+                        HMimg.Source = HMpics + (badGuess + 1) + ".png";
 
                         //Background is redish for incorrect input
                         btn.BackgroundColor = Color.FromRgb(236, 223, 223);
@@ -323,7 +332,7 @@ namespace Hangman
         } //UseGem ENDS
 
         */
-        public static async void GameEnd(int gameResult, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
+        public static async void GameEnd(int gameResult, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             //Shows Game Result
             await GameResult(gameResult, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
@@ -331,7 +340,7 @@ namespace Hangman
             //New Hangman Game
             if (gameResult == 1)
             {
-                await NewHMGame(ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                await NewHMGame(ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
             }
             else //GAME OVER
             {
@@ -406,7 +415,6 @@ namespace Hangman
             await Task.Delay(1000);
         }
 
-        //CP
         //Selects a Random Word from DB
         public static async Task<string> NewWord()
         {
@@ -423,7 +431,6 @@ namespace Hangman
             word = App.Database.GetWordAsync(RandID).Result;
             return word.Word;
         }
-        //CP ENDS
     }
 }
 

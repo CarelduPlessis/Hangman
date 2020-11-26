@@ -28,7 +28,7 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Green
             };
-            btnEasy.Clicked += btnEasy_Clicked;
+            btnEasy.Clicked += btnLevelPick_Clicked;
 
             Button btnMed = new Button
             {
@@ -36,7 +36,7 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Yellow
             };
-            btnMed.Clicked += btnMed_Clicked;
+            btnMed.Clicked += btnLevelPick_Clicked;
 
             Button btnHard = new Button
             {
@@ -44,7 +44,7 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Red
             };
-            btnHard.Clicked += btnHard_Clicked;
+            btnHard.Clicked += btnLevelPick_Clicked;
             
             Content = new StackLayout
             {
@@ -65,20 +65,16 @@ namespace Hangman
             };
         }
 
-        private void btnHard_Clicked(object sender, EventArgs e)
+        //Sending Data to HM page
+        private async void btnLevelPick_Clicked(object sender, EventArgs e)
         {
-            string level = "Hard";
-            Navigation.PushAsync(new HangManPage());
-        }
+            if (sender is Button btn)
+            {
+                //Pushing GameMode to HMGame
+                string Diff = btn.Text;
 
-        private void btnMed_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new HangManPage());
-        }
-
-        private void btnEasy_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new HangManPage());
+                await Navigation.PushAsync(new HangManPage(Diff));
+            }
         }
     }
 }
