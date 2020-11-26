@@ -98,7 +98,7 @@ namespace Hangman
 
         private void DB_Clicked(object sender, EventArgs e)
         {
-            //DBPage will be created.     Navigation.PushAsync(new WordsCRUDPage());
+            Navigation.PushAsync(new WordsCRUDPage());
         }
 
         // This will need to be Removed after Testing 

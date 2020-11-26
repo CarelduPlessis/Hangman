@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -27,63 +28,6 @@ namespace Hangman
         static int GameState;
 
         /*
-        //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
-        List<string> HMword = new List<string>();
-        //Adding to HM Word List
-
-        public void TempHardCode()
-        {
-            HMword.Add("Siberian Husky");
-            HMword.Add("Pirate");
-            HMword.Add("Mythical Creature");
-            HMword.Add("inevitable");
-            HMword.Add("Movie Night");
-            HMword.Add("Candy Floss");
-            HMword.Add("Wolf");
-            HMword.Add("Challenge");
-            HMword.Add("Hangman");
-            HMword.Add("Ice Cream");
-            HMword.Add("Pizza");
-            HMword.Add("Hamburger");
-            HMword.Add("Soccer");
-            HMword.Add("Archery");
-            HMword.Add("Horse Riding");
-            HMword.Add("To Boldly Go");
-            HMword.Add("Cowboy");
-            HMword.Add("Valley");
-            HMword.Add("Ball");
-            HMword.Add("Toy");
-            HMword.Add("Chocolate");
-            HMword.Add("Nacho");
-            HMword.Add("Possible");
-            HMword.Add("Crazy");
-            HMword.Add("Villan");
-            HMword.Add("Hero");
-            HMword.Add("Social Butterfly");
-            HMword.Add("Nerd");
-            HMword.Add("Programmer");
-            HMword.Add("Dragon");
-            HMword.Add("Pieces of Eight");
-            HMword.Add("Map");
-            HMword.Add("Internet");
-            HMword.Add("Unknown");
-            HMword.Add("Dinosaur");
-            HMword.Add("Weapon");
-            HMword.Add("Pencil");
-            HMword.Add("Game");
-            HMword.Add("Tired");
-            HMword.Add("Bored");
-            HMword.Add("Travel");
-            HMword.Add("Friends");
-            HMword.Add("Star Trek");
-            HMword.Add("Irritating");
-            HMword.Add("Star");
-        }
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
-
-
-        /*
         //Getting Game Difficulty
         GameMode = Convert.ToChar(Diff);
 
@@ -105,7 +49,6 @@ namespace Hangman
                 deadNum = 6;
                 PointsWorth = 7;
             }
-
         */
 
         //Makes the Correct Num of '_' for VisWord
@@ -178,16 +121,14 @@ namespace Hangman
             return shortWord2;
         } //Remove Spaces ENDS
 
-        public static void NewHMGame(Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
+        public static async Task NewHMGame(Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
         {
             //Showing the Total Score & Gems
             ScoreTxt.Text = Convert.ToString(ScoreCount);
             GemBtn.Text = "X " + GemCount;
 
             //Getting New Word
-            //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
-            HidWord = "debugging";
-            //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
+            HidWord = await NewWord();
 
             //Ensures Letters are ALL Capitals
             HidWord = HidWord.ToUpper();
@@ -390,7 +331,7 @@ namespace Hangman
             //New Hangman Game
             if (gameResult == 1)
             {
-                NewHMGame(ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                await NewHMGame(ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
             }
             else //GAME OVER
             {
@@ -464,6 +405,25 @@ namespace Hangman
             //Gives User Time to See Result
             await Task.Delay(1000);
         }
+
+        //CP
+        //Selects a Random Word from DB
+        public static async Task<string> NewWord()
+        {
+            int RandID = 0;
+            Random randomWord = new Random();
+            WordsModel word = new WordsModel();
+
+            var condition = "Empty";
+            while (condition == "Empty")
+            {
+                RandID = randomWord.Next(1, App.Database.GetWordsAsync().Result.Max(x => x.Id) + 1);
+                condition = $"{await App.Database.CheckRandomID(RandID)}";
+            }
+            word = App.Database.GetWordAsync(RandID).Result;
+            return word.Word;
+        }
+        //CP ENDS
     }
 }
 

@@ -40,7 +40,7 @@ namespace Hangman
             Content = STLayout;
         }
 
-        async void NextWord(object sender, EventArgs e) 
+        public async void NextWord(object sender, EventArgs e) 
         {
             var condition = "Empty";
             while (condition == "Empty") 
