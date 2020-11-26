@@ -15,7 +15,6 @@ namespace Hangman
         {
             InitializeComponent();
 
-
             Label Level = new Label
             {
                 Text = "Here are levels to choose!",
@@ -28,7 +27,7 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Green
             };
-            btnEasy.Clicked += btnEasy_Clicked;
+            btnEasy.Clicked += SelectDiff;
 
             Button btnMed = new Button
             {
@@ -36,7 +35,7 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Yellow
             };
-            btnMed.Clicked += btnMed_Clicked;
+            btnMed.Clicked += SelectDiff;
 
             Button btnHard = new Button
             {
@@ -44,7 +43,7 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Red
             };
-            btnHard.Clicked += btnHard_Clicked;
+            btnHard.Clicked += SelectDiff;
             
             Content = new StackLayout
             {
@@ -64,21 +63,23 @@ namespace Hangman
                 }
             };
         }
-
-        private void btnHard_Clicked(object sender, EventArgs e)
+        public void SelectDiff(object sender, EventArgs e)
         {
-            string level = "Hard";
-            Navigation.PushAsync(new HangManPage());
-        }
-
-        private void btnMed_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new HangManPage());
-        }
-
-        private void btnEasy_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new HangManPage());
-        }
+            var btn = (Button)sender;
+            var vm = BindingContext as HangmanModel;
+            var hangmanModel = new HangmanModel
+            {
+                NameOfPlayer = vm.NameOfPlayer,
+                Difficulty = btn.Text,
+                PlayerModelID = vm.PlayerModelID
+            };
+            Console.WriteLine("************************");
+            Console.WriteLine(vm.NameOfPlayer);
+            Console.WriteLine("************************");
+            /*
+            var hangmanPage = new HangManPage();
+            hangmanPage.BindingContext = hangmanModel;
+            Navigation.PushAsync(hangmanPage);*/
+        }   
     }
 }
