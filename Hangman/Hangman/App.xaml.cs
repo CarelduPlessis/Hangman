@@ -11,6 +11,7 @@ namespace Hangman
     {
         static HangmanDatabase database;
 
+        // locate Database and access the database anywhere in the app
         public static HangmanDatabase Database
         {
             get
@@ -26,6 +27,8 @@ namespace Hangman
         {
             InitializeComponent();
 
+            // allows navigation in the app by making the mainpage the root 
+            // from where all page can navigate from
             MainPage = new NavigationPage(new MainPage());
         }
 
