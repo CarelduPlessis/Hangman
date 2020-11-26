@@ -433,16 +433,15 @@ namespace Hangman
         */
         public void SelectProfile(object sender, EventArgs e)
         {
-            var hangmanModel = new HangmanModel
-            {
-                NameOfPlayer = entryPlayerName.Text,
-                PlayerModelID = SelectedPlayerIndex
-            };
-
+            //var hangmanModel = new HangmanModel
+            //{
+            //    NameOfPlayer = entryPlayerName.Text,
+            //    PlayerModelID = SelectedPlayerIndex
+            //};
             // Go to next page with the data
-            var levelPage = new LevelPage();
-            levelPage.BindingContext = hangmanModel;
-            Navigation.PushAsync(levelPage);
+            //var levelPage = new LevelPage();
+            //levelPage.BindingContext = hangmanModel;
+            //Navigation.PushAsync(levelPage);
         }
         #endregion
     }

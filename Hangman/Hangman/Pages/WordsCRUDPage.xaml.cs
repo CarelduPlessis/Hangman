@@ -35,6 +35,8 @@ namespace Hangman
         {
             InitializeComponent();
 
+            AddDefaultWords();
+       
             MainstackLayout = new StackLayout();
 
             UserInput = new Entry
@@ -80,10 +82,10 @@ namespace Hangman
             //creat the ListView
             WordListView = new ListView
             {
-                ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word),
+                ItemsSource = App.Database.GetWordsAsync().Result.OrderBy(i => i.Word).Select(itm => itm.Word),
                 SelectionMode = (ListViewSelectionMode)SelectionMode.Single
             };
-
+            
             //Console.WriteLine("**************************");
             //Console.WriteLine(App.Database.GetWordsAsync().Result.Max(x => x.Id));
             //Console.WriteLine("**************************");
@@ -92,7 +94,7 @@ namespace Hangman
             //await App.Database.GetWordAsync(rand.Next(1, App.Database.GetWordsAsync().Result.Max(x => x.Id)));
 
             // Store all the ids to a List
-            words = App.Database.GetWordsAsync().Result.Select(itm => itm.Id).ToList();
+            words = App.Database.GetWordsAsync().Result.OrderBy(i => i.Word).Select(itm => itm.Id).ToList();
 
             MainstackLayout.Children.Add(WordListView);
         }
@@ -139,8 +141,8 @@ namespace Hangman
         #region Refresh The Page
         public void RefreshThePage()
         {
-            // Go to this page to refresh the page (helps to avoid errors)
-            Navigation.PushAsync(new WordsCRUDPage());
+           // Go to this page to refresh the page (helps to avoid errors)
+           Navigation.PushAsync(new WordsCRUDPage());
         }
         #endregion
 
@@ -201,7 +203,7 @@ namespace Hangman
                     RemoveCharacter(_text, sender);
                 }
 
-                if (_text.Length > _limit)       //If it is more than your character restriction
+                if (_text.Length >= _limit)       //If it is more than your character restriction
                 {
                     DisplayAlert("Max Characters is " + _limit, "You can't have more than " + _limit + " Characters", "OK");
                     RemoveCharacter(_text, sender);
@@ -278,6 +280,49 @@ namespace Hangman
             resetEntry = true;
             UserInput.Text = DefaultUserInput;
             resetEntry = false;
+        }
+        #endregion
+
+        #region Add Default Words
+        bool RefreshPage;
+        public async void AddDefaultWords() 
+        {
+            // Words in array Must:
+            // Word Length must not be more then 11
+            // No Specail Characters allowed in Words
+            // No Spaces allowed in Words
+            string[] defaultwords = {"Track","Hello","Tiger","Pig","Dog"
+               , "Cat", "Bird" , "Pirate", "inevitable", "Wolf", "Challenge"
+              , "Hangman", "Pizza", "Hamburger", "Soccer", "Archery", "Cowboy"
+              , "Valley", "Ball", "Toy", "Chocolate", "Nacho", "Volleyball"
+              , "Possible", "Crazy", "Villan", "Hero", "Vanilla", "Nerd"
+              ,"Programmer", "Dragon", "Map", "Internet", "Unknown", "Dinosaur"
+              ,"Weapon", "Pencil", "Game", "Tired", "Bored", "Travel"
+              , "Friends", "Irritating", "Star"};
+
+            for (int i = 0; i < defaultwords.Length; i++) // loop through array
+            {
+                RefreshPage = false;
+                string currentWord = defaultwords[i];
+                string condition = $"{await App.Database.CheckDuplicateWords(currentWord)}";
+                if ( "Empty" == condition) // Check DB for Duplicate Word
+                {
+                    if (currentWord.Length < 11 && currentWord.Any(ch => Char.IsLetter(ch))) // Words need to stay with in 11 characters
+                    {
+                        // Save Default Values to DB
+                        await App.Database.SaveWordAsync(new WordsModel
+                        {
+                            Id = 0,
+                            Word = defaultwords[i]
+                        });
+                        RefreshPage = true;
+                    }
+                }
+            } // end of the loop
+            if (RefreshPage) 
+            {
+                RefreshThePage();
+            }
         }
         #endregion
     }

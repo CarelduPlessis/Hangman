@@ -15,7 +15,7 @@ namespace Hangman
         {
             InitializeComponent();
 
-
+            OnDisappearing();
             Label Level = new Label
             {
                 Text = "Here are levels to choose!",
@@ -75,6 +75,11 @@ namespace Hangman
 
                 await Navigation.PushAsync(new HangManPage(Diff));
             }
+        }
+
+        protected override void OnDisappearing()
+        {
+            
         }
     }
 }
