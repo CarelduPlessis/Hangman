@@ -154,6 +154,8 @@ namespace Hangman
             Content = myGrid;
 
             //MN - Setup Game Difficulty
+            //DB db = new DB();
+            //db.readdata
             Logic.SetDiff(Diff);
 
             //Loads HM Game once on load

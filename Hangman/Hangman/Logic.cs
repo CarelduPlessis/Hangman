@@ -433,3 +433,22 @@ namespace Hangman
         }
     }
 }
+
+        //Selects a Random Word from DB
+        public static async Task<string> NewWord()
+        {
+            int RandID = 0;
+            Random randomWord = new Random();
+            WordsModel word = new WordsModel();
+
+            var condition = "Empty";
+            while (condition == "Empty")
+            {
+                RandID = randomWord.Next(1, App.Database.GetWordsAsync().Result.Max(x => x.Id) + 1);
+                condition = $"{await App.Database.CheckRandomID(RandID)}";
+            }
+            word = App.Database.GetWordAsync(RandID).Result;
+            return word.Word;
+        }
+    }
+}
