@@ -58,12 +58,13 @@ namespace Hangman
             deleteBTN.IsEnabled = false;
             deleteBTN.Clicked += DeleteWordDB;
 
-            CreateListView();
+            CreateListView(); // Create and Add the ListView to Main Layout
 
             WordListView.ItemSelected += GetWordFromListView;
 
             WordListView.ItemTapped += DeselectWord;
 
+            // Adding Elements to Main Layout
             MainstackLayout.Children.Add(UserInput);
 
             MainstackLayout.Children.Add(saveBTN);
@@ -76,6 +77,7 @@ namespace Hangman
         #region Create the ListView
         public void CreateListView()
         {
+            //creat the ListView
             WordListView = new ListView
             {
                 ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word),
@@ -89,6 +91,7 @@ namespace Hangman
             //Random rand = new Random();
             //await App.Database.GetWordAsync(rand.Next(1, App.Database.GetWordsAsync().Result.Max(x => x.Id)));
 
+            // Store all the ids to a List
             words = App.Database.GetWordsAsync().Result.Select(itm => itm.Id).ToList();
 
             MainstackLayout.Children.Add(WordListView);
@@ -98,22 +101,17 @@ namespace Hangman
         #region Save Word To DataBase  
         async void SaveWordDB(object sender, EventArgs e)
         {
-            if (validation()) 
-            { 
-                if (!string.IsNullOrWhiteSpace(UserInput.Text))
+            if (validation()) // if input is valid then
+            {
+                // Save input to database
+                await App.Database.SaveWordAsync(new WordsModel
                 {
-                    await App.Database.SaveWordAsync(new WordsModel
-                    {
                         Id = SelectedWordIndex,
                         Word = UserInput.Text
-                    });
-                    // SelectedWordIndex = 0;
-                    //UserInput.Text = string.Empty;
-                    //WordListView.ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word);
-                    RefreshThePage();
-                }
+                });
+                RefreshThePage();// refresh the page (avoid error)
             }
-            else
+            else // Display Alert Message
             {
                 await DisplayAlert("Invalid Entry", "You need to enter in a word that doesn't have more then " + _limit + " letters", "Ok");
             }
@@ -128,13 +126,11 @@ namespace Hangman
                 WordsModel word = new WordsModel();
                 word = await App.Database.GetWordAsync(SelectedWordIndex);
 
-                if (word != null)
+                if (word != null) // if Word exist then 
                 {
-                    deleteBTN.IsEnabled = false;
-                    await App.Database.DeleteWordAsync(word);
-                    //UserInput.Text = string.Empty;
-                    //WordListView.ItemsSource = App.Database.GetWordsAsync().Result.Select(itm => itm.Word);
-                    RefreshThePage();
+                    deleteBTN.IsEnabled = false; // disable delete Button 
+                    await App.Database.DeleteWordAsync(word); // Delete Word for DB
+                    RefreshThePage(); // refresh the page (avoid error)
                 }
             }
         }
@@ -143,25 +139,30 @@ namespace Hangman
         #region Refresh The Page
         public void RefreshThePage()
         {
+            // Go to this page to refresh the page (helps to avoid errors)
             Navigation.PushAsync(new WordsCRUDPage());
         }
         #endregion
 
-        #region Get the selected word from the ListView
+        #region Find Selected Word From The ListView
         async void GetWordFromListView(object sender, SelectedItemChangedEventArgs e)
         {
-            if (isSelectedWord == false)
+            if (isSelectedWord == false) // if word is not Selected then
             {
+                // Find word in DB
                 var lvw = (ListView)sender;
                 SelectedWordIndex = words[e.SelectedItemIndex];
                 WordsModel word = new WordsModel();
                 word = await App.Database.GetWordAsync(SelectedWordIndex);
 
+                //Display the word information
                 UserInput.Text = word.Word;
-                Console.WriteLine("List Id: " + e.SelectedItemIndex);
-                Console.WriteLine("DB Id: " + SelectedWordIndex);
                 deleteBTN.IsEnabled = true;
                 isSelectedWord = true;
+
+                // Testing Purposes 
+               // Console.WriteLine("List Id: " + e.SelectedItemIndex);
+               // Console.WriteLine("DB Id: " + SelectedWordIndex);
             }
         }
         #endregion
@@ -169,13 +170,14 @@ namespace Hangman
         #region Deselect the Word from ListView
         public void DeselectWord(object sender, ItemTappedEventArgs e)
         {
-            if (isSelectedWord == true)
+            if (isSelectedWord == true)// if Word is selected then 
             {
+                // Deselect Word
                 ((ListView)sender).SelectedItem = null;
-                RestedALLEntrys();
-                isSelectedWord = false;
-                deleteBTN.IsEnabled = false;
-                SelectedWordIndex = 0;
+                RestedALLEntrys(); // reste all the input controls to defualt values 
+                isSelectedWord = false; // no word is selected 
+                deleteBTN.IsEnabled = false; // disable delete button
+                SelectedWordIndex = 0; 
             }
         }
         #endregion
@@ -190,9 +192,10 @@ namespace Hangman
             var _entry = (Entry)sender;
 
             string _text = _entry.Text; //Get Current Text
-            if (resetEntry == false)
+            if (resetEntry == false) // if no entrys are being reset then
             {
-                if (_entry.Text.Any(ch => !Char.IsLetter(ch)))
+                //Start Check validation 
+                if (_entry.Text.Any(ch => !Char.IsLetter(ch))) // only accepts Letter
                 {
                     DisplayAlert("Invalid Input", "No Special Characters or Numbers", "OK");
                     RemoveCharacter(_text, sender);
@@ -220,6 +223,7 @@ namespace Hangman
         public void OnFocus(object sender, FocusEventArgs e)
         {
             var _entry = (Entry)sender;
+            // Checks if entry has it Default value if so then remove default text form entry
             if (_entry.Text == DefaultUserInput)
             {
                 _entry.Text = "";
@@ -230,28 +234,34 @@ namespace Hangman
         #region When the Entry is UnFocus (Give Entry its Default Text if Entry is Empty)
         public void UnFocusEntry(object sender, EventArgs e)
         {
-            var _entry = (Entry)sender;
-            if (_entry.Text == "")
+            // Entry: on leaving focus then 
+            var _entry = (Entry)sender;// get current entry 
+            if (_entry.Text == "")// if entry text is empty then 
             {
-                resetEntry = true;
+                resetEntry = true;// turn off validation 
+                // find entry and add their defualt text
                 if (sender == UserInput)
                 {
                     _entry.Text = DefaultUserInput;
-                    resetEntry = false;
+                    resetEntry = false; // turn on validation 
                 }
             }
         }
         #endregion
 
         #region Check Validation before Saving Word To Database
+        /*
+          Check input if it is valide before saving input
+        */
         public bool validation()
         {
+            // check if entry is doesn't contain default text or is emty
             if (UserInput.Text != DefaultUserInput && UserInput.Text != "")
             {
                 countValidInput += 1;
             }
 
-            if (countValidInput == 1)
+            if (countValidInput == 1) // check if all input is valid
             {
                 return true;
             }

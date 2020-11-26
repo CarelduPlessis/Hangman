@@ -14,8 +14,8 @@ namespace Hangman
         }
 
         [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        public string Word { get; set; }
+        public int Id { get; set; } // Id of the Word
+        public string Word { get; set; } // The Word to used in Hangman
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

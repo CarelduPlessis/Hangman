@@ -41,6 +41,12 @@ namespace Hangman
             //cellWrapper.Children.Add(horizontalLayout);
             //View = cellWrapper;
 
+
+            // Website: microsoft Documentation
+            // Title: Creating a Xamarin.Forms DataTemplate
+            // URL: https://docs.microsoft.com/en-us/xamarin/xamarin-forms/app-fundamentals/templates/data-templates/creating
+
+            //instantiate each of our views
             var grid = new Grid();
             var userNameLabel = new Label();
             var nameOfPlayerLabel = new Label { HorizontalTextAlignment = TextAlignment.Center };
@@ -48,18 +54,19 @@ namespace Hangman
             var gemsLabel = new Label { HorizontalTextAlignment = TextAlignment.Center };
             var Avatar = new Image();
 
+            //set bindings
             userNameLabel.SetBinding(Label.TextProperty, "UserName");
             nameOfPlayerLabel.SetBinding(Label.TextProperty, "NameOfPlayer");
             bestScoreLabel.SetBinding(Label.TextProperty, "BestScore");
             gemsLabel.SetBinding(Label.TextProperty, "Gems");
             Avatar.SetBinding(Image.SourceProperty, "AvatarOfPlayer");
 
+            //add views to the view hierarchy
             grid.Children.Add(userNameLabel);
             grid.Children.Add(nameOfPlayerLabel, 1, 0);
             grid.Children.Add(bestScoreLabel, 2, 0);
             grid.Children.Add(gemsLabel, 3, 0);
             grid.Children.Add(Avatar, 4, 0);
-
             View = grid;
         }
     }
