@@ -135,10 +135,5 @@ namespace Hangman
         {
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
-
-        public void StartGame_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new ProfilePage());
-        }
     }
 }

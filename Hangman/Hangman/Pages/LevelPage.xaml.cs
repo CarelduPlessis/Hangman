@@ -47,9 +47,9 @@ namespace Hangman
             btnHard.Clicked += btnLevelPick_Clicked;
 
             Content = new StackLayout
-                {            {
+            {            
                 Children =
-
+                {
                     Level,
                     new StackLayout
                     {
