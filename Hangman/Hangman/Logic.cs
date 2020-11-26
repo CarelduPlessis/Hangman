@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -12,88 +13,36 @@ namespace Hangman
         //The Hidden Word
         static string HidWord;
 
-        //Defing Labels & Btns
-
-        static int ScoreCount = 0;
+        //Score & GameCount
+        static int ScoreCount;
+        static int GameCount;
 
         //Gem
-        static int GemCount = 0;
+        static int GemCount;
 
         //Total Wrong Guesses
         static int badGuess = 0;
-        static int deadNum;
-        static int PointsWorth;
+        static int deadNum = 12;
+        static int PointsWorth = 1;
+
+        //HM Image Prefix
+        static string HMpics;
 
         static int GameState;
 
-        /*
-        //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
-        List<string> HMword = new List<string>();
-        //Adding to HM Word List
-
-        public void TempHardCode()
-        {
-            HMword.Add("Siberian Husky");
-            HMword.Add("Pirate");
-            HMword.Add("Mythical Creature");
-            HMword.Add("inevitable");
-            HMword.Add("Movie Night");
-            HMword.Add("Candy Floss");
-            HMword.Add("Wolf");
-            HMword.Add("Challenge");
-            HMword.Add("Hangman");
-            HMword.Add("Ice Cream");
-            HMword.Add("Pizza");
-            HMword.Add("Hamburger");
-            HMword.Add("Soccer");
-            HMword.Add("Archery");
-            HMword.Add("Horse Riding");
-            HMword.Add("To Boldly Go");
-            HMword.Add("Cowboy");
-            HMword.Add("Valley");
-            HMword.Add("Ball");
-            HMword.Add("Toy");
-            HMword.Add("Chocolate");
-            HMword.Add("Nacho");
-            HMword.Add("Possible");
-            HMword.Add("Crazy");
-            HMword.Add("Villan");
-            HMword.Add("Hero");
-            HMword.Add("Social Butterfly");
-            HMword.Add("Nerd");
-            HMword.Add("Programmer");
-            HMword.Add("Dragon");
-            HMword.Add("Pieces of Eight");
-            HMword.Add("Map");
-            HMword.Add("Internet");
-            HMword.Add("Unknown");
-            HMword.Add("Dinosaur");
-            HMword.Add("Weapon");
-            HMword.Add("Pencil");
-            HMword.Add("Game");
-            HMword.Add("Tired");
-            HMword.Add("Bored");
-            HMword.Add("Travel");
-            HMword.Add("Friends");
-            HMword.Add("Star Trek");
-            HMword.Add("Irritating");
-            HMword.Add("Star");
-        }
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
-
-
-        /*
         //Getting Game Difficulty
-        GameMode = Convert.ToChar(Diff);
+        public static void SetDiff(string GameMode)
+        {
+            ScoreCount = 0;
+            GameCount = -1;
 
-            if (GameMode == 'E')
+            if (GameMode == "Easy")
             {
                 HMpics = "HME";
                 deadNum = 12;
                 PointsWorth = 1;
             }
-            else if (GameMode == 'M')
+            else if (GameMode == "Medium")
             {
                 HMpics = "HMN";
                 deadNum = 9;
@@ -105,8 +54,7 @@ namespace Hangman
                 deadNum = 6;
                 PointsWorth = 7;
             }
-
-        */
+        }
 
         //Makes the Correct Num of '_' for VisWord
         public static string MakeBlankChars(string HidWord)
@@ -178,16 +126,18 @@ namespace Hangman
             return shortWord2;
         } //Remove Spaces ENDS
 
-        public static void NewHMGame(Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
+        public static async Task NewHMGame(Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
         {
+            //Adds to Game Count
+            GameCount++;
+            GameTxt.Text = "Games Won: " + GameCount;
+
             //Showing the Total Score & Gems
             ScoreTxt.Text = Convert.ToString(ScoreCount);
             GemBtn.Text = "X " + GemCount;
 
             //Getting New Word
-            //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
-            HidWord = "debugging";
-            //!!!!!!!!!!!!!!!!!!!!!!!!!! Hard Code !!!!!!!!
+            HidWord = await NewWord();
 
             //Ensures Letters are ALL Capitals
             HidWord = HidWord.ToUpper();
@@ -216,7 +166,7 @@ namespace Hangman
 
             //Showing Img, Score & set bad Guesses to Zero
             // + HMpics
-            HMimg.Source = "HME" + 1 + ".png";
+            HMimg.Source = HMpics + 1 + ".png";
             ScoreTxt.Text = "Score: " + ScoreCount;
             badGuess = 0;
 
@@ -224,7 +174,7 @@ namespace Hangman
             GameState = 1;
         } //NewHMGame ENDS
 
-        public static async void GuessChar(object sender, EventArgs e, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
+        public static async void GuessChar(object sender, EventArgs e, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             //Only While Game is Active
             if (sender is Button btn && GameState == 1)
@@ -259,7 +209,7 @@ namespace Hangman
                     {
                         //Game Over
                         GameState = 0;
-                        GameEnd(1, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                        GameEnd(1, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
                     }
 
                 } //The Char Exists in HidWordENDS
@@ -275,7 +225,7 @@ namespace Hangman
 
                         //Game Over
                         GameState = 0;
-                        GameEnd(0, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                        GameEnd(0, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
 
                         //Background is redish for incorrect input
                         btn.BackgroundColor = Color.FromRgb(255, 102, 102);
@@ -286,7 +236,7 @@ namespace Hangman
                     }
                     else
                     {
-                        HMimg.Source = "HME" + (badGuess + 1) + ".png";
+                        HMimg.Source = HMpics + (badGuess + 1) + ".png";
 
                         //Background is redish for incorrect input
                         btn.BackgroundColor = Color.FromRgb(236, 223, 223);
@@ -382,7 +332,7 @@ namespace Hangman
         } //UseGem ENDS
 
         */
-        public static async void GameEnd(int gameResult, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
+        public static async void GameEnd(int gameResult, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             //Shows Game Result
             await GameResult(gameResult, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
@@ -390,7 +340,7 @@ namespace Hangman
             //New Hangman Game
             if (gameResult == 1)
             {
-                NewHMGame(ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                await NewHMGame(ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
             }
             else //GAME OVER
             {
@@ -464,7 +414,22 @@ namespace Hangman
             //Gives User Time to See Result
             await Task.Delay(1000);
         }
+
+        //Selects a Random Word from DB
+        public static async Task<string> NewWord()
+        {
+            int RandID = 0;
+            Random randomWord = new Random();
+            WordsModel word = new WordsModel();
+
+            var condition = "Empty";
+            while (condition == "Empty")
+            {
+                RandID = randomWord.Next(1, App.Database.GetWordsAsync().Result.Max(x => x.Id) + 1);
+                condition = $"{await App.Database.CheckRandomID(RandID)}";
+            }
+            word = App.Database.GetWordAsync(RandID).Result;
+            return word.Word;
+        }
     }
 }
-
-

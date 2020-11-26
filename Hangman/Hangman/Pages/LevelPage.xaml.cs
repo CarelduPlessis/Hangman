@@ -15,6 +15,7 @@ namespace Hangman
         {
             InitializeComponent();
 
+
             Label Level = new Label
             {
                 Text = "Here are levels to choose!",
@@ -27,7 +28,7 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Green
             };
-            btnEasy.Clicked += SelectDiff;
+            btnEasy.Clicked += btnLevelPick_Clicked;
 
             Button btnMed = new Button
             {
@@ -35,7 +36,7 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Yellow
             };
-            btnMed.Clicked += SelectDiff;
+            btnMed.Clicked += btnLevelPick_Clicked;
 
             Button btnHard = new Button
             {
@@ -43,8 +44,8 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Red
             };
-            btnHard.Clicked += SelectDiff;
-            
+            btnHard.Clicked += btnLevelPick_Clicked;
+
             Content = new StackLayout
             {
                 Children =
@@ -63,20 +64,17 @@ namespace Hangman
                 }
             };
         }
-        public void SelectDiff(object sender, EventArgs e)
-        {
-            var btn = (Button)sender;
-            var vm = BindingContext as HangmanModel;
-            var hangmanModel = new HangmanModel
-            {
-                NameOfPlayer = vm.NameOfPlayer,
-                Difficulty = btn.Text,
-                PlayerModelID = vm.PlayerModelID
-            };
 
-            var hangmanPage = new HangManPage();
-            hangmanPage.BindingContext = hangmanModel;
-            Navigation.PushAsync(hangmanPage);
-        }   
+        //Sending Data to HM page
+        private async void btnLevelPick_Clicked(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                //Pushing GameMode to HMGame
+                string Diff = btn.Text;
+
+                await Navigation.PushAsync(new HangManPage(Diff));
+            }
+        }
     }
 }
