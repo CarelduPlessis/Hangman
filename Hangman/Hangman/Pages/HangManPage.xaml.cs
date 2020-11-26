@@ -20,6 +20,7 @@ namespace Hangman
         public int attempt = 0;
         public int HMpicture = 1;
         public string word = "_";
+        Label letterLabel = new Label();
 
         Button btn;
         Button[] btns = new Button[26];
@@ -32,6 +33,7 @@ namespace Hangman
 
             Grid myGrid = new Grid();
 
+            // Score box background
             BoxView scoreBox = new BoxView
             {
                 Color = Color.Purple
@@ -39,6 +41,7 @@ namespace Hangman
             Grid.SetRow(scoreBox, 0);
             Grid.SetColumnSpan(scoreBox, 7);
 
+            // Score Label as GScore
             Label GScore = new Label
             {
                 Text = "Score: " + Convert.ToString(score),
@@ -50,6 +53,7 @@ namespace Hangman
             Grid.SetRow(GScore, 0);
             Grid.SetColumnSpan(GScore, 7);
 
+            // Attempt Label as GAttempt
             Entry GAttempt = new Entry
             {
                 Text = "Attempt: " + Convert.ToString(attempt),
@@ -61,6 +65,7 @@ namespace Hangman
             Grid.SetRow(GAttempt, 0);
             Grid.SetColumnSpan(GAttempt, 7);
 
+            // Image box background
             BoxView imageBox = new BoxView
             {
                 Color = Color.Black
@@ -69,6 +74,7 @@ namespace Hangman
             Grid.SetRowSpan(imageBox, 3);
             Grid.SetColumnSpan(imageBox, 7);
 
+            // Hangman image as HMimage
             Image HMimage = new Image
             {
                 Source = "HM0" + Convert.ToString(HMpicture) + ".png",
@@ -77,6 +83,7 @@ namespace Hangman
             Grid.SetRowSpan(HMimage, 3);
             Grid.SetColumnSpan(HMimage, 7);
 
+            // Letter box as background
             BoxView letterBox = new BoxView
             {
                 Color = Color.Purple
@@ -84,6 +91,7 @@ namespace Hangman
             Grid.SetRow(letterBox, 4);
             Grid.SetColumnSpan(letterBox, 7);
 
+            // Word Label as letterLabel with word as text
             Label letterLabel = new Label
             {
                 Text = word,
@@ -95,6 +103,7 @@ namespace Hangman
             Grid.SetRow(letterLabel, 4);
             Grid.SetColumnSpan(letterLabel, 7);
 
+            // Gem Button as HMGem
             Button HMGem = new Button
             {
                 Text = "HMGem.png",
@@ -103,6 +112,7 @@ namespace Hangman
             };
             Grid.SetRow(HMGem, 8);
             Grid.SetColumnSpan(HMGem, 7);
+            HMGem.Clicked += HMGem_Clicked;
 
             // Keyboard setting.
             int letter = 65;
@@ -153,11 +163,22 @@ namespace Hangman
 
             Content = myGrid;
 
-           
-
             //MN - Loads HM Game once on load
             Logic.NewHMGame(GScore, HMimage, letterLabel, btns, HMGem);
             //MN - ENDS
+        }
+
+        // Button navigations
+        private void HMGem_Clicked(object sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public string Temp;
+        public void OnButtonClicked(object sender, EventArgs args)
+        {
+            Temp = ((Button)sender).Text;
+            letterLabel.Text = Temp;
         }
     }
 }

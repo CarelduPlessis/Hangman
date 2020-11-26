@@ -11,12 +11,15 @@ namespace Hangman
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GameOverPage : ContentPage
     {
+        // Setting public int.
+        public int score = 0;
         public GameOverPage()
         {
             InitializeComponent();
 
-            //Message, Entry as GOName, two Lables of GOLevel, GOScore and two Buttons as btnAgain, btnExit.
+            //Message, Labels as GOName, GOLevel, GOScore as 0.
 
+            // Color line.
             BoxView BoxLine = new BoxView
             {
 
@@ -30,15 +33,17 @@ namespace Hangman
                 TextColor = Color.Red,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
-                FontSize = 25
+                FontSize = 40
             };
+
+            // Color line.
             BoxView BoxLine2 = new BoxView
             {
 
                 Color = Color.DarkKhaki
 
             };
-            Entry GOName = new Entry
+            Label GOName = new Label
             {
                 Text = "_",
                 FontSize = 25,
@@ -47,7 +52,7 @@ namespace Hangman
                 VerticalOptions = LayoutOptions.Center
             };
 
-            Entry GOLevel = new Entry
+            Label GOLevel = new Label
             {
                 Text = "_",
                 FontSize = 25,
@@ -56,7 +61,6 @@ namespace Hangman
                 VerticalOptions = LayoutOptions.Center
             };
 
-            int score = 0;
             Label GOscore = new Label
             {
                 Text = "Score: " + Convert.ToString(score),
@@ -66,11 +70,12 @@ namespace Hangman
                 VerticalOptions = LayoutOptions.Center
             };
 
+            // Setting two Buttons as btnAgain, btnExit.
             Button btnAgain = new Button
             {
                 Text = "Play again!",
                 FontSize = 25,
-                TextColor = Color.Gray
+                TextColor = Color.Red
             };
             btnAgain.Clicked += Again_Clicked;
 
@@ -87,6 +92,7 @@ namespace Hangman
                 Children =
                 {
                     BoxLine,
+                    Welcome,
                     GOName,
                     GOLevel,
                     GOscore,
@@ -103,18 +109,18 @@ namespace Hangman
                 }
             };
         }
+
+        // Button navigations
+        // Exit button to kill
         private void Exit_Clicked(object sender, EventArgs e)
         {
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
+        // Again button to get back to LevelPage
         public void Again_Clicked(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new HangManPage());
-        }
-        /*public void Again_Clicked(object sender, EventArgs e)
-        {
             Navigation.PushAsync(new LevelPage());
-        }*/
+        }
     }
 }
