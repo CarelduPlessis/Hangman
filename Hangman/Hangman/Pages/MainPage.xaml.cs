@@ -58,7 +58,6 @@ namespace Hangman
             };
             btnExit.Clicked += Exit_Clicked;
 
-
             // This will need to be Removed after Testing 
             Button btnTest = new Button
             {
@@ -67,7 +66,6 @@ namespace Hangman
                 TextColor = Color.Black
             };
             btnTest.Clicked += Test_Clicked;
-
             Content = new StackLayout
             {
                 Children =
@@ -82,7 +80,6 @@ namespace Hangman
                             btnInst,
                             btnProf,
                             btnDB,
-                            btnTest,
                             btnExit,
                         }
                     }
@@ -101,8 +98,7 @@ namespace Hangman
 
         private void DB_Clicked(object sender, EventArgs e)
         {
-            //DBPage will be created.
-            Navigation.PushAsync(new WordsCRUDPage());
+            //DBPage will be created.     Navigation.PushAsync(new WordsCRUDPage());
         }
 
         // This will need to be Removed after Testing 
@@ -111,7 +107,6 @@ namespace Hangman
             // will Navigate To TestRandomWordPage.
             Navigation.PushAsync(new TestRandomWordPage());
         }
-
         private void Exit_Clicked(object sender, EventArgs e)
         {
             System.Diagnostics.Process.GetCurrentProcess().Kill();

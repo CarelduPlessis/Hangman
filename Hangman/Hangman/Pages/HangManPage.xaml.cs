@@ -15,158 +15,148 @@ namespace Hangman
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HangManPage : ContentPage
     {
+        // Setting public int and string.
+        public int score = 0;
+        public int attempt = 0;
+        public int HMpicture = 1;
+        public string word = "_";
 
-        //Label[] label = new Label[25];
+        Button btn;
+        Button[] btns = new Button[26];
+
         public HangManPage()
         {
             InitializeComponent();
 
+            // Setting score as GScore, attempt as GAttempt, Hangman picture as HMImage, word as letterLabel, then keyborad and HMGem at bottom right.
+
             Grid myGrid = new Grid();
 
-            BoxView Box1 = new BoxView
+            BoxView scoreBox = new BoxView
+            {
+                Color = Color.Purple
+            };
+            Grid.SetRow(scoreBox, 0);
+            Grid.SetColumnSpan(scoreBox, 7);
+
+            Label GScore = new Label
+            {
+                Text = "Score: " + Convert.ToString(score),
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Center,
+                TextColor = Color.Cyan,
+                FontSize = 30
+            };
+            Grid.SetRow(GScore, 0);
+            Grid.SetColumnSpan(GScore, 7);
+
+            Entry GAttempt = new Entry
+            {
+                Text = "Attempt: " + Convert.ToString(attempt),
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Center,
+                TextColor = Color.Cyan,
+                FontSize = 20
+            };
+            Grid.SetRow(GAttempt, 0);
+            Grid.SetColumnSpan(GAttempt, 7);
+
+            BoxView imageBox = new BoxView
             {
                 Color = Color.Black
-
             };
-            Grid.SetRow(myGrid, 0);
+            Grid.SetRow(imageBox, 1);
+            Grid.SetRowSpan(imageBox, 3);
+            Grid.SetColumnSpan(imageBox, 7);
 
-            Image picture = new Image
+            Image HMimage = new Image
             {
-                Source ="HME11.png"
+                Source = "HM0" + Convert.ToString(HMpicture) + ".png",
             };
-            Grid.SetRow(picture, 0);
-
-            Label scoreLabel = new Label
-            {
-                Text = "Score: ",
-                HorizontalOptions = LayoutOptions.Center,
-                TextColor = Color.Cyan
-            };
-            Grid.SetRow(scoreLabel, 0);
+            Grid.SetRow(HMimage, 1);
+            Grid.SetRowSpan(HMimage, 3);
+            Grid.SetColumnSpan(HMimage, 7);
 
             BoxView letterBox = new BoxView
             {
-                Color = Color.Black
-
+                Color = Color.Purple
             };
-            Grid.SetRow(letterBox, 1);
+            Grid.SetRow(letterBox, 4);
+            Grid.SetColumnSpan(letterBox, 7);
 
-            Label letterLabel1 = new Label
+            Label letterLabel = new Label
             {
-                Text = "Hidden Wo_rd",
+                Text = word,
                 HorizontalOptions = LayoutOptions.Center,
-                TextColor = Color.Cyan
+                VerticalOptions = LayoutOptions.Center,
+                TextColor = Color.Cyan,
+                FontSize = 30
             };
-            Grid.SetRow(letterLabel1, 1);
+            Grid.SetRow(letterLabel, 4);
+            Grid.SetColumnSpan(letterLabel, 7);
 
+            Button HMGem = new Button
+            {
+                Text = "HMGem.png",
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Center,
+            };
+            Grid.SetRow(HMGem, 8);
+            Grid.SetColumnSpan(HMGem, 7);
+
+            // Keyboard setting.
             int letter = 65;
             //Value = A
             int letterZ = 90;
             char MyChar;
-            
+            int btnsIndex = 0;
+
             //Rows
-            //for()
+            for (int r = 5; letter <= letterZ; r++)
+            {
+                //Columns
+                for (int c = 0; c < 7 && letter <= letterZ; c++)
+                {
+                    MyChar = Convert.ToChar(letter);
+                    //myGrid.Children.Add(new BoxView
+                    //{
+                    //    Margin = 0,
+                    //    HeightRequest = 40
+                    //}, c, r);
+                    myGrid.Children.Add(btn = new Button
+                    {
+                        Text = Convert.ToString(MyChar),
+                        FontSize = 20
+                    }, c, r);
+                    //MN - Added
+                    btns[btnsIndex] = btn;
+                    btnsIndex++;
+                    btn.Clicked += (object sender, EventArgs e) =>
+                    {
+                        Logic.GuessChar(sender, e, GScore, HMimage, letterLabel, btns, HMGem);
+                    };
+                    //MN - Added ENDS
 
+                    letter++;
+                }
+            }
+            //MyChar.Clicked += OnButtonClicked;
 
-            myGrid.Children.Add(Box1);
-            myGrid.Children.Add(picture);
-            myGrid.Children.Add(scoreLabel);
+            myGrid.Children.Add(scoreBox);
+            myGrid.Children.Add(GAttempt);
+            myGrid.Children.Add(GScore);
+            myGrid.Children.Add(imageBox);
+            myGrid.Children.Add(HMimage);
             myGrid.Children.Add(letterBox);
-            myGrid.Children.Add(letterLabel1);
-
-            //label[0].Text = "A";
-            //label[1].Text = "B";
-            //label[2].Text = "C";
-            //label[3].Text = "D";
-            //label[4].Text = "E";
-            //label[5].Text = "F";
-            //label[6].Text = "G";
-            //label[7].Text = "H";
-            //label[8].Text = "I";
-            //label[9].Text = "J";
-            //label[10].Text = "K";
-            //label[11].Text = "L";
-            //label[12].Text = "M";
-            //label[13].Text = "N";
-            //label[14].Text = "O";
-            //label[15].Text = "P";
-            //label[16].Text = "Q";
-            //label[17].Text = "R";
-            //label[18].Text = "S";
-            //label[19].Text = "T";
-            //label[20].Text = "U";
-            //label[21].Text = "V";
-            //label[22].Text = "W";
-            //label[23].Text = "X";
-            //label[24].Text = "Y";
-            //label[25].Text = "Z";
-
-            //myGrid.Children.Add(label[0], 0, 0);
-            //myGrid.Children.Add(label[1], 1, 0);
-            //myGrid.Children.Add(label[2], 2, 0);
-            //myGrid.Children.Add(label[3], 3, 0);
-            //myGrid.Children.Add(label[4], 4, 0);
-            //myGrid.Children.Add(label[5], 5, 0);
-            //myGrid.Children.Add(label[6], 6, 0);
-            //myGrid.Children.Add(label[7], 7, 0);
-            //myGrid.Children.Add(label[8], 8, 1);
-            //myGrid.Children.Add(label[9], 0, 1);
-            //myGrid.Children.Add(label[10], 1, 1);
-            //myGrid.Children.Add(label[11], 2, 1);
-            //myGrid.Children.Add(label[12], 3, 1);
-            //myGrid.Children.Add(label[13], 4, 1);
-            //myGrid.Children.Add(label[14], 5, 1);
-            //myGrid.Children.Add(label[15], 6, 1);
-            //myGrid.Children.Add(label[16], 7, 1);
-            //myGrid.Children.Add(label[17], 8, 1);
-            //myGrid.Children.Add(label[18], 0, 2);
-            //myGrid.Children.Add(label[19], 1, 2);
-            //myGrid.Children.Add(label[20], 2, 2);
-            //myGrid.Children.Add(label[21], 3, 2);
-            //myGrid.Children.Add(label[22], 4, 2);
-            //myGrid.Children.Add(label[23], 5, 2);
-            //myGrid.Children.Add(label[24], 6, 2);
-            //myGrid.Children.Add(label[25], 7, 2);
+            myGrid.Children.Add(letterLabel);
+            myGrid.Children.Add(HMGem);
 
             Content = myGrid;
 
 
-            //label[0] = MyLabel1;
-            //label[1] = MyLabel2;
-            //label[2] = MyLabel3;
-            //label[3] = MyLabel4;
-            //label[4] = MyLabel5;
-
-
-
+            //MN - Loads HM Game once on load
+            Logic.NewHMGame(GScore, HMimage, letterLabel, btns, HMGem);
+            //MN - ENDS
         }
-
-
-        //public ImageSource Source { get; set; }
-        public string Temp;
-        public string Word = "tiger";
-        public int Times = 1;
-        public void OnButtonClicked(object sender, EventArgs args)
-        {
-            char[] arr = Word.ToCharArray();
-            for (int n = 0; n < Word.Length; n++)
-            {
-                Temp = ((Button)sender).Text;
-                ((Button)sender).IsEnabled = false;
-                if (Convert.ToChar(Temp) == arr[n])
-                {
-                    //label[n].Text = Temp;
-                }
-                else
-                {
-                    //Picture.Source = "/Resources/drawable/HME0" + Times + ".png";
-                    Times = Times + 1;
-                }
-                Times = Times - n;
-
-            }
-
-        }
-
     }
 }
