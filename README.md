@@ -1,9 +1,9 @@
 ***************************************************************************
 # Team Members
 ***************************************************************************
-  # Carel du Plessis
-  # Melissa Wolf
-  # Yoshiki Tatsumi
+   Carel du Plessis
+   Melissa Wolf
+   Yoshiki Tatsumi
 ***************************************************************************
 
 
@@ -29,11 +29,19 @@
     Title: Xamarin #5 Sqlite 1 to many
     URL: https://matetiblog.wordpress.com/2018/06/17/xamarin-5-sqlite-1-to-many/
     
+    Website: Microsoft Documentation
+    Title: CA1828: Do not use CountAsync/LongCountAsync when AnyAsync can be used
+    URL: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1828
+
+    Website: Microsoft Documentation
+    Title: Async return types (C#)
+    URL: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types
+    
    ***************************************************************************
    ***************************************************************************
     
    ***************************************************************************
-    ListView
+    * ListView
    ***************************************************************************
       Purpers: Store Data in a ListView
       Website: microsoft
@@ -59,7 +67,7 @@
     
     
    ***************************************************************************
-    Other
+    * Other
    ***************************************************************************
     Purpers: Exit App
     Website: stackoverflow
