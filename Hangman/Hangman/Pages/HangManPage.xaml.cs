@@ -153,6 +153,7 @@ namespace Hangman
 
             Content = myGrid;
 
+           
 
             //MN - Loads HM Game once on load
             Logic.NewHMGame(GScore, HMimage, letterLabel, btns, HMGem);

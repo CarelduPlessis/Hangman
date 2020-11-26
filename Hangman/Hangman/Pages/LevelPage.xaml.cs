@@ -73,13 +73,10 @@ namespace Hangman
                 Difficulty = btn.Text,
                 PlayerModelID = vm.PlayerModelID
             };
-            Console.WriteLine("************************");
-            Console.WriteLine(vm.NameOfPlayer);
-            Console.WriteLine("************************");
-            /*
+
             var hangmanPage = new HangManPage();
             hangmanPage.BindingContext = hangmanModel;
-            Navigation.PushAsync(hangmanPage);*/
+            Navigation.PushAsync(hangmanPage);
         }   
     }
 }
