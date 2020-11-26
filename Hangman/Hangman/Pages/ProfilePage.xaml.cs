@@ -50,22 +50,18 @@ namespace Hangman
         string ImageName; // keep track of the Images (Avatar Images)
 
         int countValidInput = 0; // Check Validation before saving data to DB
-        /*
-        bool genderValidInput = false;
-        bool playerNameValidInput = false;
-        bool userNameValidInput = false;
-        */
+        
         #region ProfilePage()
         public ProfilePage()
         {
             InitializeComponent();
 
             #region Layouts
-            MainstackLayout = new StackLayout();
+            MainstackLayout = new StackLayout(); // main Layout 
 
-            ListViewHeader = new Grid();
+            ListViewHeader = new Grid(); // Grid for Header for listview 
 
-            ListViewGrid = new Grid();
+            ListViewGrid = new Grid(); // Grid for ListView 
             Grid.SetRow(ListViewGrid, 1);
             #endregion
 
@@ -130,6 +126,7 @@ namespace Hangman
             #region Add Elements to Main Layout
             MainstackLayout.Children.Add(selectPlayerBTN);
 
+            // the Headers position on the screen
             ListViewHeader.Children.Add(hdNameLabel);
             ListViewHeader.Children.Add(hdLastNameLabel, 1, 0);
             ListViewHeader.Children.Add(hdBestScoreLabel, 2, 0);
@@ -138,9 +135,10 @@ namespace Hangman
 
             MainstackLayout.Children.Add(ListViewHeader);
 
-            CreateListView();
+            CreateListView(); // Create listview 
 
-            ListViewGrid.Children.Add(playerListView);
+            ListViewGrid.Children.Add(playerListView); // Add Listview to ListViewGrid
+
             MainstackLayout.Children.Add(ListViewGrid);
 
             playerListView.ItemSelected += GetPlayerFromListView;
@@ -180,7 +178,6 @@ namespace Hangman
             // Creat listview
             playerListView = new ListView
             {
-                
                 ItemsSource = items,
                 Margin = new Thickness(0, 20, 0, 0),
                 HeightRequest = Application.Current.MainPage.Width * 0.5,
@@ -306,7 +303,7 @@ namespace Hangman
             if (resetEntry == false) // if no entrys are being reset then
             {
                 //Start Check validation 
-                if (_entry.Text.Any(ch => !Char.IsLetterOrDigit(ch))) // only accepts Letter Or Numbers
+                if (_entry.Text.Any(ch => !Char.IsLetterOrDigit(ch))) // only accepts Letter or Numbers
                 {
                     DisplayAlert("Invalid Input", "No Special Characters", "OK");
                     RemoveCharacter(_text, sender);
@@ -384,36 +381,35 @@ namespace Hangman
         #endregion
 
         #region Check Validation Before Saving Player To Database
+        /*
+            Check input if it is valide before saving input
+        */
         public bool validation()
         {
+            // check if Gender entry input is valide: input is restricted to female or male
             if (entryPlayerGender.Text.ToLower() == "female" || entryPlayerGender.Text.ToLower() == "male")
             {
                 countValidInput += 1;
-                //genderValidInput = true;
             }
 
+            // check if entry is doesn't contain default text
             if (entryUserName.Text != DefaultUserName)
             {
                 countValidInput += 1;
-                //userNameValidInput = true;
             }
 
+            // check if entry is doesn't contain default text
             if (entryPlayerName.Text != DefaultPlayerName)
             {
                 countValidInput += 1;
-                //playerNameValidInput = true;
             }
 
-            if (countValidInput == 3)
+            if (countValidInput == 3) // check if all input is valid
             {
                 return true;
             }
             else
-            {   /*
-                playerNameValidInput = false;
-                userNameValidInput = false;
-                genderValidInput = false;
-                */
+            {  
                 countValidInput = 0;
                 return false;
             }
@@ -432,6 +428,9 @@ namespace Hangman
         #endregion
 
         #region Select Profile to use in New Game of Hangman
+        /*
+         * Select the player Profile for the current game
+        */
         public void SelectProfile(object sender, EventArgs e)
         {
             var hangmanModel = new HangmanModel
@@ -440,6 +439,7 @@ namespace Hangman
                 PlayerModelID = SelectedPlayerIndex
             };
 
+            // Go to next page with the data
             var levelPage = new LevelPage();
             levelPage.BindingContext = hangmanModel;
             Navigation.PushAsync(levelPage);
