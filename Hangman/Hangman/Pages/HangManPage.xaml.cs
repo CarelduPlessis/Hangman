@@ -33,7 +33,6 @@ namespace Hangman
             LogicClass = new Logic();
 
             //Prevents Players Back Btn
-            NavigationPage.SetHasBackButton(this, false);
             NavigationPage.SetHasNavigationBar(this, false);
 
             // Setting score as GScore, attempt as GAttempt, Hangman picture as HMImage, word as letterLabel, then keyborad and HMGem at bottom right.
@@ -182,6 +181,14 @@ namespace Hangman
             //Loads HM Game once on load
             LogicClass.NewHMGame(UserID, GScore, GameLbl, HMimage, letterLabel, btns, HMGem);
             //MN - ENDS
+        }
+
+        // prevent hardware backbButton
+        protected override bool OnBackButtonPressed()
+        {
+            base.OnBackButtonPressed();
+            // If you want to stop the back button
+            return true;
         }
     }
 }
