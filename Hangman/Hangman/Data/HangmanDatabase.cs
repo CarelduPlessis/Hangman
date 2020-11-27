@@ -18,7 +18,7 @@ namespace Hangman.Data
         {
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<PlayerModel>().Wait();
-            _database.CreateTableAsync<HangmanModel>().Wait();
+            _database.CreateTableAsync<HangManModel>().Wait();
             _database.CreateTableAsync<WordsModel>().Wait();
         }
 
@@ -53,20 +53,20 @@ namespace Hangman.Data
             //return _database.DeleteAllAsync<PlayerModel>();
         }
         // get all the hangman game from DB
-        public Task<List<HangmanModel>> GetHangmansAsync()
+        public Task<List<HangManModel>> GetHangmansAsync()
         {
-            return _database.Table<HangmanModel>().ToListAsync();
+            return _database.Table<HangManModel>().ToListAsync();
         }
         // get one hangman game from DB
-        public Task<HangmanModel> GetHangmanAsync(int id)
+        public Task<HangManModel> GetHangmanAsync(int id)
         {
-            return _database.Table<HangmanModel>()
+            return _database.Table<HangManModel>()
                             .Where(i => i.Id == id)
                             .FirstOrDefaultAsync();
         }
 
         // save hangman game to the DB
-        public Task<int> SaveHangmanAsync(HangmanModel hangman)
+        public Task<int> SaveHangmanAsync(HangManModel hangman)
         {
             if (hangman.Id != 0)
             {
@@ -97,7 +97,7 @@ namespace Hangman.Data
         }
 
         //Delete Hangman game from DB
-        public Task<int> DeleteHangmanAsync(HangmanModel hangman)
+        public Task<int> DeleteHangmanAsync(HangManModel hangman)
         {
             return _database.DeleteAsync(hangman);
         }
