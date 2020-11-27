@@ -11,10 +11,9 @@ namespace Hangman
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LevelPage : ContentPage
     {
-        public LevelPage()
+        public LevelPage(int UserID)
         {
             InitializeComponent();
-
 
             Label Level = new Label
             {
@@ -28,7 +27,10 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Green
             };
-            btnEasy.Clicked += btnLevelPick_Clicked;
+            btnEasy.Clicked += (object sender, EventArgs e) =>
+            {
+                btnLevelPick_Clicked(sender, e, UserID);
+            };
 
             Button btnMed = new Button
             {
@@ -36,7 +38,10 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Yellow
             };
-            btnMed.Clicked += btnLevelPick_Clicked;
+            btnMed.Clicked += (object sender, EventArgs e) =>
+            {
+                btnLevelPick_Clicked(sender, e, UserID);
+            };
 
             Button btnHard = new Button
             {
@@ -44,8 +49,11 @@ namespace Hangman
                 FontSize = 25,
                 TextColor = Color.Red
             };
-            btnHard.Clicked += btnLevelPick_Clicked;
-            
+            btnHard.Clicked += (object sender, EventArgs e) =>
+            {
+                btnLevelPick_Clicked(sender, e, UserID);
+            };
+
             Content = new StackLayout
             {
                 Children =
@@ -66,14 +74,14 @@ namespace Hangman
         }
 
         //Sending Data to HM page
-        private async void btnLevelPick_Clicked(object sender, EventArgs e)
+        private async void btnLevelPick_Clicked(object sender, EventArgs e, int UserID)
         {
             if (sender is Button btn)
             {
                 //Pushing GameMode to HMGame
                 string Diff = btn.Text;
 
-                await Navigation.PushAsync(new HangManPage(Diff));
+                await Navigation.PushAsync(new HangManPage(UserID, Diff));
             }
         }
     }

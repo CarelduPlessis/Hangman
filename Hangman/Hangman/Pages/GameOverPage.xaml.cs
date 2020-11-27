@@ -11,9 +11,18 @@ namespace Hangman
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GameOverPage : ContentPage
     {
-        public GameOverPage()
+
+        Logic LogicClass;
+
+        public GameOverPage(int UserID, string Diff, int TotalScore)
         {
             InitializeComponent();
+
+            LogicClass = new Logic();
+
+            //Prevents Players Back Btn
+            NavigationPage.SetHasBackButton(this, false);
+            NavigationPage.SetHasNavigationBar(this, false);
 
             //Message, Entry as GOName, two Lables of GOLevel, GOScore and two Buttons as btnAgain, btnExit.
 
@@ -26,7 +35,7 @@ namespace Hangman
 
             Label Welcome = new Label
             {
-                Text = "Game over!",
+                Text = "GAME OVER!",
                 TextColor = Color.Red,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
@@ -38,28 +47,36 @@ namespace Hangman
                 Color = Color.DarkKhaki
 
             };
-            Entry GOName = new Entry
+            Label GOName = new Label
             {
-                Text = "_",
+                Text = "",
                 FontSize = 25,
                 TextColor = Color.Blue,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center
             };
 
-            Entry GOLevel = new Entry
+            Label GOLevel = new Label
             {
-                Text = "_",
+                Text = Diff,
                 FontSize = 25,
                 TextColor = Color.Green,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center
             };
 
-            int score = 0;
             Label GOscore = new Label
             {
-                Text = "Score: " + Convert.ToString(score),
+                Text = "Score: " + Convert.ToString(TotalScore),
+                FontSize = 25,
+                TextColor = Color.DarkCyan,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+
+            Label GOHighScore = new Label
+            {
+                Text = "",
                 FontSize = 25,
                 TextColor = Color.DarkCyan,
                 HorizontalOptions = LayoutOptions.Center,
@@ -70,9 +87,12 @@ namespace Hangman
             {
                 Text = "Play again!",
                 FontSize = 25,
-                TextColor = Color.Gray
+                TextColor = Color.Black
             };
-            btnAgain.Clicked += Again_Clicked;
+            btnAgain.Clicked += (object sender, EventArgs e) =>
+             {
+                 Again_Clicked(sender, e, UserID);
+             };
 
             Button btnExit = new Button
             {
@@ -87,9 +107,11 @@ namespace Hangman
                 Children =
                 {
                     BoxLine,
+                    Welcome,
                     GOName,
                     GOLevel,
                     GOscore,
+                    GOHighScore,
                     BoxLine2,
                     new StackLayout
                     {
@@ -102,19 +124,19 @@ namespace Hangman
                     }
                 }
             };
+
+            //Adds In User Name on Page Load
+            LogicClass.GetPlayerName(UserID, GOName);
+            LogicClass.CheckHiScores(UserID, TotalScore, GOHighScore);
         }
         private void Exit_Clicked(object sender, EventArgs e)
         {
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
-        public void Again_Clicked(object sender, EventArgs e)
+        public async void Again_Clicked(object sender, EventArgs e, int UserID)
         {
-            Navigation.PushAsync(new LevelPage());
+            await Navigation.PushAsync(new LevelPage(UserID));
         }
-        /*public void Again_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new LevelPage());
-        }*/
     }
 }

@@ -47,6 +47,7 @@ namespace Hangman.Data
         public Task<int> DeletePlayerAsync(PlayerModel player)
         {
             return _database.DeleteAsync(player);
+            //return _database.DeleteAllAsync<PlayerModel>();
         }
 
         public Task<List<HangmanModel>> GetHangmansAsync()

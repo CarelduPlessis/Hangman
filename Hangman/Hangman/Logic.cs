@@ -11,30 +11,34 @@ namespace Hangman
     public class Logic
     {
         //The Hidden Word
-        static string HidWord;
+        string HidWord;
 
         //Score & GameCount
-        static int ScoreCount;
-        static int GameCount;
+        public int ScoreCount;
+        int GameCount;
 
         //Gem
-        static int GemCount;
+        int GemCount;
 
         //Total Wrong Guesses
-        static int badGuess = 0;
-        static int deadNum = 12;
-        static int PointsWorth = 1;
+        string ThisGameMode;
+        int badGuess = 0;
+        int deadNum = 12;
+        int PointsWorth = 1;
 
         //HM Image Prefix
-        static string HMpics;
+        string HMpics;
 
-        static int GameState;
+        int GameState;
+        public int GameOnOff = 1;
 
         //Getting Game Difficulty
-        public static void SetDiff(string GameMode)
+        public void SetDiff(string GameMode)
         {
             ScoreCount = 0;
             GameCount = -1;
+
+            ThisGameMode = GameMode;
 
             if (GameMode == "Easy")
             {
@@ -57,7 +61,7 @@ namespace Hangman
         }
 
         //Makes the Correct Num of '_' for VisWord
-        public static string MakeBlankChars(string HidWord)
+        public string MakeBlankChars(string HidWord)
         {
             string VisWord = "";
 
@@ -77,7 +81,7 @@ namespace Hangman
             return VisWord;
         } //Make Blank Chars ENDS
 
-        public static string SpaceString(string MyString)
+        public string SpaceString(string MyString)
         {
             string spacedString = "";
 
@@ -89,7 +93,7 @@ namespace Hangman
             return spacedString;
         } //Space String ENDS
 
-        public static string RemoveSpaces(string CurrVisWord)
+        public string RemoveSpaces(string CurrVisWord)
         {
             string shortWord1 = "";
             string shortWord2 = "";
@@ -126,7 +130,7 @@ namespace Hangman
             return shortWord2;
         } //Remove Spaces ENDS
 
-        public static async Task NewHMGame(Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
+        public async Task NewHMGame(int UserID, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn) //Sets Up Hangman Game
         {
             //Adds to Game Count
             GameCount++;
@@ -134,6 +138,10 @@ namespace Hangman
 
             //Showing the Total Score & Gems
             ScoreTxt.Text = Convert.ToString(ScoreCount);
+
+            //Getting User's Gems and Adding them
+            await GetUserGems(UserID, 0);
+
             GemBtn.Text = "X " + GemCount;
 
             //Getting New Word
@@ -174,7 +182,8 @@ namespace Hangman
             GameState = 1;
         } //NewHMGame ENDS
 
-        public static async void GuessChar(object sender, EventArgs e, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
+        //Guessing Char
+        public async Task GuessChar(object sender, EventArgs e, int UserID, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             //Only While Game is Active
             if (sender is Button btn && GameState == 1)
@@ -209,7 +218,7 @@ namespace Hangman
                     {
                         //Game Over
                         GameState = 0;
-                        GameEnd(1, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                        await GameEnd(UserID, 1, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
                     }
 
                 } //The Char Exists in HidWordENDS
@@ -223,16 +232,16 @@ namespace Hangman
                         HMimg.Source = "HMDead.png";
                         VisWordTxt.Text = SpaceString(HidWord);
 
-                        //Game Over
-                        GameState = 0;
-                        GameEnd(0, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
-
                         //Background is redish for incorrect input
                         btn.BackgroundColor = Color.FromRgb(255, 102, 102);
 
                         //Dead Char Changes to badGuess Color
                         await Task.Delay(1000);
                         btn.BackgroundColor = Color.FromRgb(236, 223, 223);
+
+                        //Game Over
+                        GameState = 0;
+                        await GameEnd(UserID, 0, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
                     }
                     else
                     {
@@ -245,80 +254,40 @@ namespace Hangman
             }
         } //GuessChar ENDS
 
-        /*
-        public static void UseGem(object sender, EventArgs e)
+        public async Task GetUserGems(int UserID, int ChngeGem)
+        {
+            //Getting Users Gems
+            PlayerModel player = new PlayerModel();
+            player = await App.Database.GetPlayerAsync(UserID);
+
+            GemCount = player.Gems;
+
+            //Update Users Gems
+            if (ChngeGem != 0)
+            {
+                GemCount = (player.Gems + ChngeGem);
+
+                await App.Database.SavePlayerAsync(new PlayerModel
+                {
+                    Id = UserID,
+                    UserName = player.UserName,
+                    NameOfPlayer = player.NameOfPlayer,
+                    AvatarOfPlayer = player.AvatarOfPlayer,
+                    Gems = GemCount,
+                    BestScore = player.BestScore
+                });
+            }
+        } //Get User's Gems ENDS
+
+        //Using Gem for Hint
+        public async Task UseGem(object sender, EventArgs e, int UserID, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns)
         {
             //Only While Game is Active
             if (sender is Button GemBtn && GameState == 1 && GemCount > 0)
             {
                 //Uses A Gem
-                GemCount = GemCount - 1;
+                await GetUserGems(UserID, -1);
                 GemBtn.Text = "X " + GemCount;
-
-                //Giving Hint
-                string PossHint = "";
-
-                string NewVisWord = "";
-
-                //Getting Not Used Letters
-                //Safety Measure for For Loop
-                if (HidWord.Length == VisWord.Length)
-                {
-                    for (int i = 0; i < HidWord.Length; i++)
-                    {
-                        //If Characters is still Unknown and not a current PossHint
-                        if (VisWord.Substring(i, 1) == "_" && PossHint.Contains(VisWord.Substring(i, 1)) == false)
-                        {
-                            PossHint += HidWord.Substring(i, 1);
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Error: Hidden Word and Visable Word Lengths Are Different");
-                }
-                //Getting Not Used Letters ENDS
-
-                //Selecting Hint Character
-                PossHint = PossHint.Substring(luck.Next(PossHint.Length), 1);
-
-                //Revealing ALL of Character
-                if (HidWord.Length == VisWord.Length)
-                {
-                    for (int i = 0; i < HidWord.Length; i++)
-                    {
-                        if (HidWord.Substring(i, 1) == PossHint)
-                        {
-                            NewVisWord += PossHint;
-                        }
-                        else
-                        {
-                            NewVisWord += VisWord.Substring(i, 1);
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Error: Hidden Word and Visable Word Lengths Are Different");
-                }
-                //Revealing ALL of Character ENDS
-
-                VisWord = NewVisWord;
-                label.Text = SpaceString(VisWord);
-
-                //Disabling Character's Btn
-                int CharValue = Convert.ToInt32(Convert.ToChar(PossHint)) - 65;
-                btns[CharValue].IsEnabled = false;
-                btns[CharValue].BackgroundColor = Color.FromRgb(223, 236, 223);
-                //Giving Hint ENDS
-
-                //If all Letters are Found
-                if (VisWord.Contains("_") == false)
-                {
-                    //Game Over
-                    GameState = 0;
-                    GameEnd(1);
-                }
 
                 //Disables Btn if No Gems Left
                 if (GemCount <= 0)
@@ -327,30 +296,81 @@ namespace Hangman
                     GemBtn.BackgroundColor = Color.LightGray;
                 }
 
+                //Giving Hint
+                string PossHint = "";
+                string NewVisWord = "";
+                Random luck = new Random();
 
+                //What User has Currently
+                string VisWord = RemoveSpaces(VisWordTxt.Text);
+
+                //Getting Not Used Letters
+                for (int i = 0; i < HidWord.Length; i++)
+                {
+                    //If Characters is still Unknown and not a current PossHint
+                    if (VisWord.Substring(i, 1) == "_" && PossHint.Contains(VisWord.Substring(i, 1)) == false)
+                    {
+                        PossHint += HidWord.Substring(i, 1);
+                    }
+                }
+                //Getting Not Used Letters ENDS
+
+                //Selecting Hint Character
+                PossHint = PossHint.Substring(luck.Next(PossHint.Length), 1);
+
+                //Revealing ALL of Character
+                for (int i = 0; i < HidWord.Length; i++)
+                {
+                    if (HidWord.Substring(i, 1) == PossHint)
+                    {
+                        NewVisWord += PossHint;
+                    }
+                    else
+                    {
+                        NewVisWord += VisWord.Substring(i, 1);
+                    }
+                }
+                //Revealing ALL of Character ENDS
+
+                VisWord = NewVisWord;
+                VisWordTxt.Text = SpaceString(VisWord);
+
+                //Disabling Character's Btn
+                int CharValue = Convert.ToInt32(Convert.ToChar(PossHint)) - 65;
+                AlphaBtns[CharValue].IsEnabled = false;
+                AlphaBtns[CharValue].BackgroundColor = Color.FromRgb(223, 236, 223);
+                //Giving Hint ENDS
+
+                //If all Letters are Found
+                if (VisWord.Contains("_") == false)
+                {
+                    //Game Over
+                    GameState = 0;
+                    await GameEnd(UserID, 1, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                }
             }
         } //UseGem ENDS
 
-        */
-        public static async void GameEnd(int gameResult, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
+        public async Task GameEnd(int UserID, int gameResult, Label ScoreTxt, Label GameTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             //Shows Game Result
-            await GameResult(gameResult, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+            await GameResult(UserID, gameResult, ScoreTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
 
             //New Hangman Game
             if (gameResult == 1)
             {
-                await NewHMGame(ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
+                GameOnOff = 1;
+
+                await NewHMGame(UserID, ScoreTxt, GameTxt, HMimg, VisWordTxt, AlphaBtns, GemBtn);
             }
             else //GAME OVER
             {
-                //!!!!!!!!!!!!!!!!!!!!!!!!
+                GameOnOff = 0;
             }
         }
 
-
         //Little Fun Result 'Animation'
-        public static async Task GameResult(int gameResult, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
+        public async Task GameResult(int UserID, int gameResult, Label ScoreTxt, Image HMimg, Label VisWordTxt, Button[] AlphaBtns, Button GemBtn)
         {
             int GemsEarned = 0;
 
@@ -366,7 +386,7 @@ namespace Hangman
 
                 //Adding to Users Gems
                 GemsEarned = RoundPoints / 10;
-                GemCount = GemCount + GemsEarned;
+                await GetUserGems(UserID, GemsEarned);
             }
             else
             {
@@ -389,7 +409,7 @@ namespace Hangman
                     case 3: HMimg.Source = "HMGem3.png"; break;
                 }
 
-                ScoreTxt.Text = "+ " + GemsEarned;
+                GemBtn.Text = "+ " + GemsEarned;
             }
 
             //Reveals New Word
@@ -413,10 +433,10 @@ namespace Hangman
 
             //Gives User Time to See Result
             await Task.Delay(1000);
-        }
+        } //Little Fun Result 'Animation' ENDS
 
         //Selects a Random Word from DB
-        public static async Task<string> NewWord()
+        public async Task<string> NewWord()
         {
             int RandID = 0;
             Random randomWord = new Random();
@@ -430,8 +450,42 @@ namespace Hangman
             }
             word = App.Database.GetWordAsync(RandID).Result;
             return word.Word;
+        } //Random Word ENDS
+
+        //Get User's Name from DB
+        public async void GetPlayerName(int UserID, Label UserNameTxt)
+        {
+            PlayerModel player = new PlayerModel();
+            player = await App.Database.GetPlayerAsync(UserID);
+
+            UserNameTxt.Text = player.UserName;
         }
+        //Get Player Name ENDS
+
+        //Check/Updates Users High Score
+        public async void CheckHiScores(int UserID, int GameScore, Label HighScore)
+        {
+            //Getting User Info
+            PlayerModel player = new PlayerModel();
+            player = await App.Database.GetPlayerAsync(UserID);
+
+            int CurrHighScore = player.BestScore;
+
+            //If User made new High Score
+            if (CurrHighScore < GameScore) {
+
+                await App.Database.SavePlayerAsync(new PlayerModel
+                {
+                    Id = UserID,
+                    UserName = player.UserName,
+                    NameOfPlayer = player.NameOfPlayer,
+                    AvatarOfPlayer = player.AvatarOfPlayer,
+                    Gems = player.Gems,
+                    BestScore = GameScore
+                });
+
+                HighScore.Text = "New High Score!";
+            }
+        } //Check Hi Scores ENDS
     }
 }
-
-

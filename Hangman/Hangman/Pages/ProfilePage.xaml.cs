@@ -390,17 +390,11 @@ namespace Hangman
         #endregion
 
         #region Select Profile to use in New Game of Hangman
-        public void SelectProfile(object sender, EventArgs e)
+        public async void SelectProfile(object sender, EventArgs e)
         {
-            var hangmanModel = new HangmanModel
-            {
-                NameOfPlayer = entryPlayerName.Text,
-                PlayerModelID = SelectedPlayerIndex
-            };
+            int UserID = SelectedPlayerIndex;
 
-            var levelPage = new LevelPage();
-            levelPage.BindingContext = hangmanModel;
-            Navigation.PushAsync(levelPage);
+            await Navigation.PushAsync(new LevelPage(UserID));
         }
         #endregion
     }
