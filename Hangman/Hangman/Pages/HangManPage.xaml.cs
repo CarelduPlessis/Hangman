@@ -24,9 +24,17 @@ namespace Hangman
         Button btn;
         Button[] btns = new Button[26];
 
-        public HangManPage(string Diff)
+        Logic LogicClass;
+
+        public HangManPage(int UserID, string Diff)
         {
             InitializeComponent();
+
+            LogicClass = new Logic();
+
+            //Prevents Players Back Btn
+            NavigationPage.SetHasBackButton(this, false);
+            NavigationPage.SetHasNavigationBar(this, false);
 
             // Setting score as GScore, attempt as GAttempt, Hangman picture as HMImage, word as letterLabel, then keyborad and HMGem at bottom right.
 
@@ -52,7 +60,7 @@ namespace Hangman
 
             Label GameLbl = new Label
             {
-                Text = "Attempt: " + Convert.ToString(attempt),
+                Text = "Games Played: " + Convert.ToString(attempt),
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
                 TextColor = Color.Cyan,
@@ -103,6 +111,16 @@ namespace Hangman
             };
             Grid.SetRow(HMGem, 8);
             Grid.SetColumnSpan(HMGem, 7);
+            HMGem.Clicked += async (object sender, EventArgs e) =>
+            {
+                await LogicClass.UseGem(sender, e, UserID, GScore, GameLbl, HMimage, letterLabel, btns);
+
+                if (LogicClass.GameOnOff == 0) //If GAME OVER go to Page
+                {
+                    await Navigation.PushAsync(new GameOverPage(UserID, Diff, LogicClass.ScoreCount));
+                };
+            };
+
 
             // Keyboard setting.
             int letter = 65;
@@ -131,9 +149,14 @@ namespace Hangman
                     //MN - Added
                     btns[btnsIndex] = btn;
                     btnsIndex++;
-                    btn.Clicked += (object sender, EventArgs e) =>
+                    btn.Clicked += async (object sender, EventArgs e) =>
                     {
-                        Logic.GuessChar(sender, e, GScore, GameLbl, HMimage, letterLabel, btns, HMGem);
+                        await LogicClass.GuessChar(sender, e, UserID, GScore, GameLbl, HMimage, letterLabel, btns, HMGem);
+
+                        if (LogicClass.GameOnOff == 0) //If GAME OVER go to Page
+                        {
+                            await Navigation.PushAsync(new GameOverPage(UserID, Diff, LogicClass.ScoreCount));
+                        };
                     };
                     //MN - Added ENDS
 
@@ -154,12 +177,10 @@ namespace Hangman
             Content = myGrid;
 
             //MN - Setup Game Difficulty
-            //DB db = new DB();
-            //db.readdata
-            Logic.SetDiff(Diff);
+            LogicClass.SetDiff(Diff);
 
             //Loads HM Game once on load
-            Logic.NewHMGame(GScore, GameLbl, HMimage, letterLabel, btns, HMGem);
+            LogicClass.NewHMGame(UserID, GScore, GameLbl, HMimage, letterLabel, btns, HMGem);
             //MN - ENDS
         }
     }

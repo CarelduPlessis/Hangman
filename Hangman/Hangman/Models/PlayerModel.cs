@@ -26,9 +26,9 @@ namespace Hangman
 
         // ForeignKey for HangmanModel
         [OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
-        public HangmanModel hangmanModel { get; set; }
+        public HangManModel hangmanModel { get; set; }
 
-        [ForeignKey(typeof(HangmanModel))]
+        [ForeignKey(typeof(HangManModel))]
         public int HangmanModelID { get; set; }
     }
 }

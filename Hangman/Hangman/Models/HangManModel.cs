@@ -7,9 +7,9 @@ using SQLiteNetExtensions.Attributes;
 
 namespace Hangman
 {
-    public class HangmanModel : INotifyPropertyChanged
+    public class HangManModel : INotifyPropertyChanged
     {
-        public HangmanModel()
+        public HangManModel()
         {
         }
 

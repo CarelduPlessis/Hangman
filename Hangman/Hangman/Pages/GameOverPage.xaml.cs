@@ -11,15 +11,21 @@ namespace Hangman
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GameOverPage : ContentPage
     {
-        // Setting public int.
-        public int score = 0;
-        public GameOverPage()
+
+        Logic LogicClass;
+
+        public GameOverPage(int UserID, string Diff, int TotalScore)
         {
             InitializeComponent();
 
-            //Message, Labels as GOName, GOLevel, GOScore as 0.
+            LogicClass = new Logic();
 
-            // Color line.
+            //Prevents Players Back Btn
+            NavigationPage.SetHasBackButton(this, false);
+            NavigationPage.SetHasNavigationBar(this, false);
+
+            //Message, Entry as GOName, two Lables of GOLevel, GOScore and two Buttons as btnAgain, btnExit.
+
             BoxView BoxLine = new BoxView
             {
 
@@ -29,14 +35,12 @@ namespace Hangman
 
             Label Welcome = new Label
             {
-                Text = "Game over!",
+                Text = "GAME OVER!",
                 TextColor = Color.Red,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
-                FontSize = 40
+                FontSize = 25
             };
-
-            // Color line.
             BoxView BoxLine2 = new BoxView
             {
 
@@ -45,7 +49,7 @@ namespace Hangman
             };
             Label GOName = new Label
             {
-                Text = "_",
+                Text = "",
                 FontSize = 25,
                 TextColor = Color.Blue,
                 HorizontalOptions = LayoutOptions.Center,
@@ -54,7 +58,7 @@ namespace Hangman
 
             Label GOLevel = new Label
             {
-                Text = "_",
+                Text = Diff,
                 FontSize = 25,
                 TextColor = Color.Green,
                 HorizontalOptions = LayoutOptions.Center,
@@ -63,21 +67,32 @@ namespace Hangman
 
             Label GOscore = new Label
             {
-                Text = "Score: " + Convert.ToString(score),
+                Text = "Score: " + Convert.ToString(TotalScore),
                 FontSize = 25,
                 TextColor = Color.DarkCyan,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center
             };
 
-            // Setting two Buttons as btnAgain, btnExit.
+            Label GOHighScore = new Label
+            {
+                Text = "",
+                FontSize = 25,
+                TextColor = Color.DarkCyan,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+
             Button btnAgain = new Button
             {
                 Text = "Play again!",
                 FontSize = 25,
-                TextColor = Color.Red
+                TextColor = Color.Black
             };
-            btnAgain.Clicked += Again_Clicked;
+            btnAgain.Clicked += (object sender, EventArgs e) =>
+             {
+                 Again_Clicked(sender, e, UserID);
+             };
 
             Button btnExit = new Button
             {
@@ -96,6 +111,7 @@ namespace Hangman
                     GOName,
                     GOLevel,
                     GOscore,
+                    GOHighScore,
                     BoxLine2,
                     new StackLayout
                     {
@@ -108,19 +124,19 @@ namespace Hangman
                     }
                 }
             };
-        }
 
-        // Button navigations
-        // Exit button to kill
+            //Adds In User Name on Page Load
+            LogicClass.GetPlayerName(UserID, GOName);
+            LogicClass.CheckHiScores(UserID, TotalScore, GOHighScore);
+        }
         private void Exit_Clicked(object sender, EventArgs e)
         {
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
-        // Again button to get back to LevelPage
-        public void Again_Clicked(object sender, EventArgs e)
+        public async void Again_Clicked(object sender, EventArgs e, int UserID)
         {
-            Navigation.PushAsync(new LevelPage());
+            await Navigation.PushAsync(new LevelPage(UserID));
         }
     }
 }
