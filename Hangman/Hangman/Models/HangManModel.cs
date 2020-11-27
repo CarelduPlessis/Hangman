@@ -14,14 +14,15 @@ namespace Hangman
         }
 
         [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        public string NameOfPlayer { get; set; }
-        public string Difficulty { get; set; }
-        public string StateOfGame { get; set; }
-        public int Score { get; set; }
+        public int Id { get; set; } // Id for the hangman Game
+        public string NameOfPlayer { get; set; } // The Name of the Player 
+        public string Difficulty { get; set; } // The Game Difficulty
+        public string StateOfGame { get; set; } // Keeps track of when the Game should end
+        public int Score { get; set; } // The Current Score 
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged; // helps with BindingContext with this model
 
+        // ForeignKey for PlayerModel
         [OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
         public PlayerModel childPlayerModel { get; set; }
 
