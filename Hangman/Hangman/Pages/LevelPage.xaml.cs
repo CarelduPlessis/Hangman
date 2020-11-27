@@ -84,5 +84,10 @@ namespace Hangman
                 await Navigation.PushAsync(new HangManPage(UserID, Diff));
             }
         }
+
+        protected override void OnDisappearing()
+        {
+            
+        }
     }
 }

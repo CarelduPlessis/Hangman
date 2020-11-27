@@ -27,6 +27,7 @@ namespace Hangman.Data
         {
             return _database.Table<PlayerModel>().ToListAsync();
         }
+
         // get one player in the DB
         public Task<PlayerModel> GetPlayerAsync(int id)
         {
@@ -34,6 +35,7 @@ namespace Hangman.Data
                             .Where(i => i.Id == id)
                             .FirstOrDefaultAsync();
         }
+
         // save player in to the DB
         public Task<int> SavePlayerAsync(PlayerModel player)
         {
@@ -150,7 +152,8 @@ namespace Hangman.Data
         public async Task<string> CheckRandomID(int id)
         => await _database.Table<WordsModel>().Where(i => i.Id == id).CountAsync() != 0 ? "Not empty" : "Empty";
 
-
+        public async Task<string> CheckDuplicateWords(string Word)
+       => await _database.Table<WordsModel>().Where(i => i.Word == Word).CountAsync() != 0 ? "Not empty" : "Empty";
 
 
 
