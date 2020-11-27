@@ -78,6 +78,10 @@
     Website: Youtube
     Title: Behavior & BindableProperty in Xamarin.Forms by Houssem Dellai
     URL: https://www.youtube.com/watch?v=dzviFuEU09Y
+    
+    Website: Xamarin Forums
+    Title: How to intercept Navigation Bar Back Button Clicked in Xamarin Forms?
+    URL: https://forums.xamarin.com/discussion/46983/how-to-intercept-navigation-bar-back-button-clicked-in-xamarin-forms
    ***************************************************************************
    ***************************************************************************
     
